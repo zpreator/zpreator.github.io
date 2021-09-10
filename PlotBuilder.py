@@ -22,7 +22,7 @@ p.yaxis.axis_label = 'Petal Width'
 p.circle('petal_length', 'petal_width', color='colors', 
          fill_alpha=0.2, size=10, source=ColumnDataSource(flowers))
 
-output_file('docs/flowers.html')
+output_file('index1.html')
 
 show(p)
 
