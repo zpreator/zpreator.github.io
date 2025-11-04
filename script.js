@@ -79,25 +79,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.addEventListener('scroll', updateActiveNavLink);
 
-    // Typing animation for hero title
-    function typeWriter() {
+    // Simple fade-in animation for hero title (replaces problematic typing animation)
+    function animateTitle() {
         const titleElement = document.querySelector('.hero-title');
         if (!titleElement) return;
 
-        const originalText = titleElement.innerHTML;
-        titleElement.innerHTML = '';
-        titleElement.style.opacity = '1';
-
-        let i = 0;
-        function type() {
-            if (i < originalText.length) {
-                titleElement.innerHTML += originalText.charAt(i);
-                i++;
-                setTimeout(type, 50);
-            }
-        }
+        titleElement.style.opacity = '0';
+        titleElement.style.transform = 'translateY(20px)';
+        titleElement.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
         
-        setTimeout(type, 500);
+        setTimeout(() => {
+            titleElement.style.opacity = '1';
+            titleElement.style.transform = 'translateY(0)';
+        }, 500);
     }
 
     // Intersection Observer for animations
@@ -296,24 +290,25 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
     document.head.appendChild(navStyle);
 
-    // Parallax effect for hero section
-    window.addEventListener('scroll', function() {
-        const scrolled = window.pageYOffset;
-        const parallaxElements = document.querySelectorAll('.profile-card');
-        
-        parallaxElements.forEach(element => {
-            const speed = 0.5;
-            element.style.transform = `rotate(3deg) translateY(${scrolled * speed}px)`;
+    // Profile card hover effect only (no parallax)
+    const profileCard = document.querySelector('.profile-card');
+    if (profileCard) {
+        profileCard.addEventListener('mouseenter', function() {
+            this.style.transform = 'rotate(0deg) translateY(-10px)';
         });
-    });
+        
+        profileCard.addEventListener('mouseleave', function() {
+            this.style.transform = 'rotate(3deg) translateY(0px)';
+        });
+    }
 
     // Add loading animation
     window.addEventListener('load', function() {
         const body = document.body;
         body.classList.add('loaded');
         
-        // Start typing animation after page load
-        setTimeout(typeWriter, 1000);
+        // Start title animation after page load
+        setTimeout(animateTitle, 500);
     });
 });
 
