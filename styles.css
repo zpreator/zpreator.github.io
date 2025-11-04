@@ -457,6 +457,11 @@ body {
     background: rgba(255, 255, 255, 0.3);
 }
 
+/* Special styling for game project */
+.project-link .fa-gamepad {
+    color: #10b981;
+}
+
 .project-content {
     padding: 1.5rem;
 }

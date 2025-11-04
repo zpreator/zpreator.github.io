@@ -7,9 +7,10 @@
 │   ├── avatar.jpg     # Main profile picture (300x300px recommended)
 │   └── headshot.jpg   # Professional headshot
 ├── projects/          # Project screenshots and demos
-│   ├── project1.jpg   # E-commerce platform screenshot
-│   ├── project2.jpg   # Task management app screenshot
-│   └── project3.jpg   # Weather dashboard screenshot
+│   ├── sheep-launcher-game.jpg    # Unity WebGL game screenshot
+│   ├── cnn-analysis-tool.jpg      # CNN manufacturing tool
+│   ├── manufacturing-alert-system.jpg  # Flask web app
+│   └── bitcoin-analysis.jpg       # DataCamp competition project
 ├── skills/           # Skill-related icons (if needed)
 ├── background/       # Background images
 └── icons/           # Custom icons or logos
