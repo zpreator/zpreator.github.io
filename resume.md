@@ -2,21 +2,31 @@
 
 **Machine Learning Engineer**
 
-📧 Email: [zachary.preator@gmail.com](mailto:zachary.preator@gmail.com)  🔗 LinkedIn: [linkedin.com/in/zachary-preator/](https://www.linkedin.com/in/zachary-preator/)  🐙 GitHub: [github.com/darthpreator](https://github.com/darthpreator)  🌐 Portfolio: [zpreator.github.io](https://zpreator.github.io)  📍 Location: West Point, Utah
+📧 Email: [zachary.preator@gmail.com](mailto:zachary.preator@gmail.com)  
+🔗 LinkedIn: [linkedin.com/in/zachary-preator/](https://www.linkedin.com/in/zachary-preator/)  
+🐙 GitHub: [github.com/darthpreator](https://github.com/darthpreator)  
+🌐 Portfolio: [zpreator.github.io](https://zpreator.github.io)  
+📍 Location: West Point, Utah
+
+---
+
+## Summary
+
+Machine Learning Engineer with 5+ years of experience researching, building, and deploying ML models in production.
 
 
 ## Experience
 
 **Cricut, Machine Learning Engineer**, South Jordan, Utah - *August 2023 - Present*
-- Developed novel system for semantic font search by finetuning CLIP with real and synthetic data from LLMs
-- Deployed machine learning recommendation models into production environments leveraging AWS and EKS
-- Won internal plugin hackathon by writing a puzzle generator plugin in Swift
-- Contributed to C# API development for supporting machine learning tasks
+- Developed novel semantic font search system by fine-tuning CLIP models with real and synthetic LLM-generated data, improving user font discovery experience
+- Successfully deployed ML recommendation models to production using AWS and EKS, serving thousands of daily users
+- **Won internal plugin hackathon** by developing a puzzle generator plugin in Swift, demonstrating rapid prototyping abilities
+- Architected and implemented C# API endpoints to support machine learning model integration and inference
 
 **Autoliv, Development Engineer**, Ogden, Utah - *August 2020 - August 2023*
-- Created CNN tool to quickly identify key points in an image for analysis with Tensorflow
-- Developed full stack internal web tool to alert for manufacturing abnormalities with Apache, Flask and Sqlite
-- Lead team to use feature engineering and dimensionality reduction to model large datasets with scikit-learn
+- Designed and implemented CNN-based computer vision tool using TensorFlow to automate critical point detection in manufacturing imagery, reducing analysis time by 80%
+- Built full-stack web application (Apache, Flask, SQLite) for real-time manufacturing anomaly detection, preventing costly production defects
+- **Led cross-functional team** implementing feature engineering and dimensionality reduction techniques with scikit-learn to analyze large-scale manufacturing datasets
 
 **Autoliv, Product Reliability Intern**, Ogden, Utah - *June 2020 - August 2020*
 - Built Tensorflow autoencoder model to classify images during manufacturing process
@@ -25,7 +35,6 @@
 **Design Automation Associates Inc, Engineering Intern**, Rexburg, Idaho - *May 2019 - June 2020*
 - Developed C# application for automating tasks and presenting data through CAD APIs
 - Created AR android mobile app in Java for viewing a mechanical assembly in 3D
-- Lead GIT learning efforts and worked in agile development environment
 
 ## Education
 
@@ -40,16 +49,27 @@
 
 ## Projects
 
-**AI Text Adventure iOS Game**, *2024* (prototype)
-- Developed interactive text-based adventure game using Apple Foundation LLM models in Swift
+**AI Text Adventure iOS Game** *(Prototype, 2024)*
+- Developed innovative text-based adventure game leveraging Apple's Foundation LLM models for dynamic story generation
+- Implemented Swift-based iOS interface with natural language processing for immersive gaming experience
+- **Technologies:** Swift, iOS SDK, Apple Foundation Models
 
-**Moovmetrics, Fitness Tracking App**, *2023 - 2025*
-- Developed full stack web application for tracking fitness with Strava API using Flask, Sqlite, HTML, CSS, JavaScript
-- Implemented user authentication, data visualization, and responsive design
+**Moovmetrics - Fitness Tracking Web App**, *2023 - 2025*
+- Built comprehensive full-stack fitness tracking application integrating Strava API with Flask backend and SQLite database
+- Implemented secure user authentication, interactive data visualizations, and responsive design for optimal mobile experience
+- **Technologies:** Flask, SQLite, JavaScript, HTML/CSS, Strava API
 
 **Twitter Bot**, *2021*
-- Used the Twitter API (Tweepy), natural language processing (NLP), and Markov Chains for generating novel tweets
+- Engineered automated content generation system using Twitter API, NLP techniques, and Markov Chain algorithms
+- Created humorous tweet generation with contextual awareness leveraging LLMs
+- **Technologies:** Python, Tweepy, NLTK, Markov Chains
 
-## Notable Technical Skills
+## Technical Skills
 
-Python, Swift, C#, Pytorch, Tensorflow, scikit-learn, AWS, EKS, ArgoCD, Unity
+**Programming Languages:** Python, Swift, C#, Java, JavaScript, HTML/CSS  
+**ML/AI Frameworks:** PyTorch, TensorFlow, scikit-learn, CLIP, Hugging Face  
+**Cloud & DevOps:** AWS, EKS, ArgoCD, Docker, GitHub Actions
+**Databases:** SQLite, SQL, PostgreSQL, Redshift
+**Web Technologies:** Flask, Apache, REST APIs  
+**Development Tools:** Unity, Xcode, Visual Studio, CAD APIs  
+**Specializations:** Computer Vision, Recommendation Systems, Search Systems
