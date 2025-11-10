@@ -243,6 +243,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const imageMatch = markdown.match(/## Image\s*\n(.*?)(?=\n##|\n*$)/s);
         project.image = imageMatch ? imageMatch[1].trim() : 'placeholder.jpg';
         
+        const videoMatch = markdown.match(/## Video\s*\n(.*?)(?=\n##|\n*$)/s);
+        project.video = videoMatch ? videoMatch[1].trim() : '';
+        
         const yearMatch = markdown.match(/## Year\s*\n(.*?)(?=\n##|\n*$)/s);
         project.year = yearMatch ? yearMatch[1].trim() : '';
         
@@ -263,11 +266,19 @@ document.addEventListener('DOMContentLoaded', function() {
             app_store: 'fas fa-mobile-alt'
         };
         
+        const linkLabels = {
+            github: 'GitHub',
+            demo: 'Demo',
+            website: 'Website',
+            app_store: 'App Store'
+        };
+        
         Object.entries(project.links).forEach(([type, url]) => {
             if (url) {
                 const icon = linkIcons[type] || 'fas fa-link';
+                const label = linkLabels[type] || type;
                 const target = url.startsWith('http') ? '_blank' : '_self';
-                linksHTML += `<a href="${url}" target="${target}" class="project-link"><i class="${icon}"></i></a>`;
+                linksHTML += `<a href="${url}" target="${target}" class="project-link-bottom"><i class="${icon}"></i> ${label}</a>`;
             }
         });
         
@@ -276,12 +287,21 @@ document.addEventListener('DOMContentLoaded', function() {
             `<span class="tech-tag">${tech}</span>`
         ).join('');
         
+        // Create media HTML (video or image)
+        let mediaHTML = '';
+        if (project.video) {
+            mediaHTML = `
+                <video class="project-video" muted loop playsinline preload="metadata" poster="images/projects/${project.image}">
+                    <source src="images/projects/${project.video}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>`;
+        } else {
+            mediaHTML = `<img src="images/projects/${project.image}" alt="${project.title}">`;
+        }
+        
         card.innerHTML = `
             <div class="project-image">
-                <img src="images/projects/${project.image}" alt="${project.title}">
-                <div class="project-overlay">
-                    ${linksHTML}
-                </div>
+                ${mediaHTML}
             </div>
             <div class="project-content">
                 <h3 class="project-title">${project.title}</h3>
@@ -291,8 +311,54 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="project-tech">
                     ${techHTML}
                 </div>
+                <div class="project-links">
+                    ${linksHTML}
+                </div>
             </div>
         `;
+        
+        // Add video hover and click functionality
+        if (project.video) {
+            const video = card.querySelector('.project-video');
+            const projectImage = card.querySelector('.project-image');
+            
+            // Play on hover
+            projectImage.addEventListener('mouseenter', () => {
+                video.play();
+            });
+            
+            // Pause on leave
+            projectImage.addEventListener('mouseleave', () => {
+                video.pause();
+                video.currentTime = 0;
+            });
+            
+            // Fullscreen on click
+            video.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (video.requestFullscreen) {
+                    video.requestFullscreen();
+                } else if (video.webkitRequestFullscreen) {
+                    video.webkitRequestFullscreen();
+                } else if (video.mozRequestFullScreen) {
+                    video.mozRequestFullScreen();
+                } else if (video.msRequestFullscreen) {
+                    video.msRequestFullscreen();
+                }
+                // Play with sound in fullscreen
+                video.muted = false;
+                video.play();
+            });
+            
+            // Mute again when exiting fullscreen
+            document.addEventListener('fullscreenchange', () => {
+                if (!document.fullscreenElement) {
+                    video.muted = true;
+                    video.pause();
+                    video.currentTime = 0;
+                }
+            });
+        }
         
         return card;
     }
