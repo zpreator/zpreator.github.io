@@ -1,5 +1,350 @@
 // Mobile Navigation Toggle
 document.addEventListener('DOMContentLoaded', function() {
+    // Dynamic content configuration
+    const contentConfig = {
+        startDate: '2020-08-01', // Your first ML/Dev role at Autoliv
+        aboutDescription: 'I\'m a Machine Learning Engineer with {YEARS}+ years of experience building and deploying ML models in production. I completed my MS in Computer Science with focus on AI & Machine Learning from Colorado State University in 2024, building on my mechanical engineering foundation that provides robust analytical skills for tackling ML problems from first principles.'
+    };
+    
+    // Calculate years of experience
+    const startDate = new Date(contentConfig.startDate);
+    const currentDate = new Date();
+    const yearsExperience = Math.floor((currentDate - startDate) / (1000 * 60 * 60 * 24 * 365.25));
+    
+    // Function to replace placeholders in text
+    function replaceYearsPlaceholder(text) {
+        return text.replace('{YEARS}', yearsExperience);
+    }
+    
+    // Function to extract summary and experience from resume.md
+    async function loadResumeContent() {
+        try {
+            const response = await fetch('./resume.md');
+            const resumeText = await response.text();
+            
+            // Extract the summary section
+            const summaryMatch = resumeText.match(/## Summary\s*\n\n(.*?)(?=\n\n## |$)/s);
+            if (summaryMatch) {
+                const summaryText = summaryMatch[1].trim();
+                
+                // Update hero description with resume summary
+                const heroDescription = document.getElementById('hero-description');
+                if (heroDescription) {
+                    heroDescription.innerHTML = replaceYearsPlaceholder(summaryText);
+                }
+            }
+            
+            // Extract and load experience section
+            loadExperienceFromResume(resumeText);
+            
+        } catch (error) {
+            console.warn('Could not load resume.md, using fallback text:', error);
+            // Fallback if resume.md can't be loaded
+            const heroDescription = document.getElementById('hero-description');
+            if (heroDescription) {
+                heroDescription.innerHTML = `Machine Learning Engineer with ${yearsExperience}+ years of experience researching, building, and deploying ML models in production. Known for relentless focus on solving complex technical challenges until breakthrough solutions are achieved.`;
+            }
+        }
+    }
+    
+    // Function to parse and load experience and education from resume
+    function loadExperienceFromResume(resumeText) {
+        try {
+            // Extract Experience section
+            const experienceMatch = resumeText.match(/## Experience\s*\n\n(.*?)(?=\n## |$)/s);
+            const educationMatch = resumeText.match(/## Education\s*\n\n(.*?)(?=\n## |$)/s);
+            
+            if (!experienceMatch && !educationMatch) return;
+            
+            const timeline = document.querySelector('.timeline');
+            if (!timeline) return;
+            
+            // Clear existing timeline
+            timeline.innerHTML = '';
+            
+            const timelineItems = [];
+            
+            // Parse experience entries
+            if (experienceMatch) {
+                const experienceText = experienceMatch[1].trim();
+                const expEntries = experienceText.split(/\n(?=\*\*)/);
+                
+                expEntries.forEach(entry => {
+                    const item = parseExperienceEntry(entry, 'experience');
+                    if (item) timelineItems.push(item);
+                });
+            }
+            
+            // Parse education entries
+            if (educationMatch) {
+                const educationText = educationMatch[1].trim();
+                const eduEntries = educationText.split(/\n(?=\*\*)/);
+                
+                eduEntries.forEach(entry => {
+                    const item = parseExperienceEntry(entry, 'education');
+                    if (item) timelineItems.push(item);
+                });
+            }
+            
+            // Sort by date (most recent first)
+            timelineItems.sort((a, b) => b.sortDate - a.sortDate);
+            
+            // Add to timeline
+            timelineItems.forEach(item => {
+                timeline.appendChild(item.element);
+            });
+            
+        } catch (error) {
+            console.warn('Could not parse experience/education from resume:', error);
+        }
+    }
+    
+    // Function to parse individual experience or education entry
+    function parseExperienceEntry(entry, type) {
+        try {
+            // Match pattern: **Company/School, Title/Degree**, Location - *Date*
+            const headerMatch = entry.match(/\*\*(.*?),\s*(.*?)\*\*,?\s*(.*?)\s*-\s*\*(.*?)\*/);
+            if (!headerMatch) return null;
+            
+            const [_, org, title, location, dateRange] = headerMatch;
+            
+            // Extract bullet points
+            const bullets = [];
+            const bulletMatches = entry.matchAll(/^- (.+)$/gm);
+            for (const match of bulletMatches) {
+                bullets.push(match[1]);
+            }
+            
+            // Create timeline item
+            const timelineItem = document.createElement('div');
+            timelineItem.className = 'timeline-item';
+            
+            // Determine sort date (use end date or "Present")
+            let sortDate = new Date();
+            if (dateRange.toLowerCase().includes('present')) {
+                sortDate = new Date();
+            } else {
+                // Try to parse the date
+                const dateMatch = dateRange.match(/\w+ \d{4}/g);
+                if (dateMatch && dateMatch.length > 0) {
+                    const lastDate = dateMatch[dateMatch.length - 1];
+                    sortDate = new Date(lastDate);
+                }
+            }
+            
+            // Format display based on type
+            let displayTitle, displayPeriod, displayDescription;
+            
+            if (type === 'education') {
+                displayTitle = title;
+                displayPeriod = `${org} (${dateRange})`;
+                displayDescription = bullets.join(' • ');
+            } else {
+                displayTitle = `${title} - ${org}`;
+                displayPeriod = dateRange;
+                // Combine bullets into a concise summary
+                displayDescription = bullets.map(b => {
+                    // Remove bold markdown
+                    return b.replace(/\*\*(.*?)\*\*/g, '$1');
+                }).join(' • ');
+            }
+            
+            timelineItem.innerHTML = `
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                    <h3>${displayTitle}</h3>
+                    <span class="timeline-period">${displayPeriod}</span>
+                    <p>${displayDescription}</p>
+                </div>
+            `;
+            
+            return { element: timelineItem, sortDate: sortDate };
+        } catch (error) {
+            console.warn('Error parsing entry:', error);
+            return null;
+        }
+    }
+    
+    // Function to load about content from markdown
+    async function loadAboutContent() {
+        try {
+            const response = await fetch('./content/about.md');
+            const aboutText = await response.text();
+            
+            // Extract the main content (skip the title)
+            const contentMatch = aboutText.match(/^#[^\n]*\n\n([\s\S]*)/);
+            if (contentMatch) {
+                const content = contentMatch[1].trim();
+                const paragraphs = content.split('\n\n');
+                
+                // Update about description (first paragraph)
+                const aboutDescription = document.getElementById('about-description');
+                if (aboutDescription && paragraphs.length > 0) {
+                    aboutDescription.innerHTML = replaceYearsPlaceholder(paragraphs[0]);
+                }
+                
+                // If there are additional paragraphs, add them
+                if (paragraphs.length > 1) {
+                    const aboutTextDiv = document.querySelector('.about-text');
+                    if (aboutTextDiv) {
+                        // Remove existing second paragraph if it exists
+                        const existingP = aboutTextDiv.querySelectorAll('p')[1];
+                        if (existingP) {
+                            existingP.innerHTML = replaceYearsPlaceholder(paragraphs[1]);
+                        } else {
+                            // Add new paragraph if it doesn't exist
+                            const newP = document.createElement('p');
+                            newP.innerHTML = replaceYearsPlaceholder(paragraphs[1]);
+                            aboutDescription.parentNode.insertBefore(newP, aboutDescription.nextSibling);
+                        }
+                    }
+                }
+            }
+        } catch (error) {
+            console.warn('Could not load about.md, using fallback text:', error);
+            // Fallback to hardcoded content
+            const aboutDescription = document.getElementById('about-description');
+            if (aboutDescription) {
+                aboutDescription.innerHTML = replaceYearsPlaceholder(contentConfig.aboutDescription);
+            }
+        }
+    }
+    
+    // Function to parse project markdown file
+    function parseProjectMarkdown(markdown) {
+        const project = {};
+        
+        // Extract title
+        const titleMatch = markdown.match(/^# (.+)$/m);
+        project.title = titleMatch ? titleMatch[1] : 'Untitled Project';
+        
+        // Extract sections
+        const descMatch = markdown.match(/## Description\s*\n(.*?)(?=\n##|\n*$)/s);
+        project.description = descMatch ? descMatch[1].trim() : '';
+        
+        const detailsMatch = markdown.match(/## Details\s*\n(.*?)(?=\n##|\n*$)/s);
+        project.details = detailsMatch ? detailsMatch[1].trim() : '';
+        
+        const techMatch = markdown.match(/## Technologies\s*\n(.*?)(?=\n##|\n*$)/s);
+        project.technologies = techMatch ? techMatch[1].trim().split(',').map(t => t.trim()) : [];
+        
+        const linksMatch = markdown.match(/## Links\s*\n(.*?)(?=\n##|\n*$)/s);
+        project.links = {};
+        if (linksMatch) {
+            const linkLines = linksMatch[1].trim().split('\n');
+            linkLines.forEach(line => {
+                const linkMatch = line.match(/- (\w+):\s*(.+)/);
+                if (linkMatch && linkMatch[2].trim()) {
+                    project.links[linkMatch[1]] = linkMatch[2].trim();
+                }
+            });
+        }
+        
+        const imageMatch = markdown.match(/## Image\s*\n(.*?)(?=\n##|\n*$)/s);
+        project.image = imageMatch ? imageMatch[1].trim() : 'placeholder.jpg';
+        
+        const yearMatch = markdown.match(/## Year\s*\n(.*?)(?=\n##|\n*$)/s);
+        project.year = yearMatch ? yearMatch[1].trim() : '';
+        
+        return project;
+    }
+    
+    // Function to create project card HTML
+    function createProjectCard(project) {
+        const card = document.createElement('div');
+        card.className = 'project-card';
+        
+        // Create links HTML
+        let linksHTML = '';
+        const linkIcons = {
+            github: 'fab fa-github',
+            demo: 'fas fa-gamepad',
+            website: 'fas fa-external-link-alt',
+            app_store: 'fas fa-mobile-alt'
+        };
+        
+        Object.entries(project.links).forEach(([type, url]) => {
+            if (url) {
+                const icon = linkIcons[type] || 'fas fa-link';
+                const target = url.startsWith('http') ? '_blank' : '_self';
+                linksHTML += `<a href="${url}" target="${target}" class="project-link"><i class="${icon}"></i></a>`;
+            }
+        });
+        
+        // Create technologies HTML
+        const techHTML = project.technologies.map(tech => 
+            `<span class="tech-tag">${tech}</span>`
+        ).join('');
+        
+        card.innerHTML = `
+            <div class="project-image">
+                <img src="images/projects/${project.image}" alt="${project.title}">
+                <div class="project-overlay">
+                    ${linksHTML}
+                </div>
+            </div>
+            <div class="project-content">
+                <h3 class="project-title">${project.title}</h3>
+                <p class="project-description">
+                    ${project.description}
+                </p>
+                <div class="project-tech">
+                    ${techHTML}
+                </div>
+            </div>
+        `;
+        
+        return card;
+    }
+    
+    // Function to load all projects
+    async function loadProjects() {
+        try {
+            // List of project files (you can expand this or make it dynamic)
+            const projectFiles = [
+                'ai-text-adventure.md',
+                'moovmetrics.md',
+                'sheep-launcher.md',
+                'twitter-bot.md'
+            ];
+            
+            const projectsGrid = document.querySelector('.projects-grid');
+            if (!projectsGrid) return;
+            
+            // Clear existing projects
+            projectsGrid.innerHTML = '';
+            
+            // Load each project
+            for (const filename of projectFiles) {
+                try {
+                    const response = await fetch(`./content/projects/${filename}`);
+                    const markdown = await response.text();
+                    const project = parseProjectMarkdown(markdown);
+                    const card = createProjectCard(project);
+                    projectsGrid.appendChild(card);
+                    
+                    // Observe the new card for animation
+                    observer.observe(card);
+                } catch (error) {
+                    console.warn(`Could not load project ${filename}:`, error);
+                }
+            }
+        } catch (error) {
+            console.error('Error loading projects:', error);
+        }
+    }
+    
+    // Load all content
+    loadResumeContent();
+    loadAboutContent();
+    loadProjects();
+    
+    // Update stats counter
+    const yearsExperienceElement = document.getElementById('years-experience');
+    if (yearsExperienceElement) {
+        yearsExperienceElement.textContent = `${yearsExperience}+`;
+    }
+
     const navToggle = document.querySelector('.nav-toggle');
     const navMenu = document.querySelector('.nav-menu');
     const navLinks = document.querySelectorAll('.nav-link');

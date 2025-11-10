@@ -79,6 +79,26 @@ body {
     transform: translateY(-2px);
 }
 
+.btn-outline {
+    background: transparent;
+    color: #374151;
+    border: 2px solid #d1d5db;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-outline:hover {
+    background: #f3f4f6;
+    border-color: #6366f1;
+    color: #6366f1;
+    transform: translateY(-2px);
+}
+
+.btn-outline i {
+    font-size: 0.9rem;
+}
+
 /* Navigation */
 .navbar {
     position: fixed;
@@ -247,7 +267,7 @@ body {
 
 .stats {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 2rem;
     margin-top: 3rem;
 }

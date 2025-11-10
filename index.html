@@ -9,6 +9,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- PDF Generation Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
     <!-- Navigation -->
@@ -51,13 +55,14 @@
                     Hi, I'm <span class="highlight">Zachary Preator</span>
                 </h1>
                 <p class="hero-subtitle">ML Engineer & Data Scientist</p>
-                <p class="hero-description">
-                    Machine Learning Engineer with 5+ years of experience researching, building, and deploying ML models in production. 
-                    Known for relentless focus on solving complex technical challenges until breakthrough solutions are achieved.
+                <p class="hero-description" id="hero-description">
                 </p>
                 <div class="hero-buttons">
                     <a href="#projects" class="btn btn-primary">View My Work</a>
                     <a href="#contact" class="btn btn-secondary">Get In Touch</a>
+                    <button id="download-resume-btn" class="btn btn-outline">
+                        <i class="fas fa-download"></i> Download Resume
+                    </button>
                 </div>
             </div>
             <div class="hero-image">
@@ -76,20 +81,12 @@
             <h2 class="section-title">About Me</h2>
             <div class="about-content">
                 <div class="about-text">
-                    <p>
-                        I'm a Machine Learning Engineer with 5+ years of experience building and deploying ML models in production. 
-                        I completed my MS in Computer Science with focus on AI & Machine Learning from Colorado State University in 2024, 
-                        building on my mechanical engineering foundation that provides robust analytical skills for tackling ML problems from first principles.
-                    </p>
-                    <p>
-                        At Cricut, I've developed novel semantic font search systems using fine-tuned CLIP models and successfully deployed 
-                        ML recommendation models serving thousands of daily users. Previously at Autoliv, I built CNN-based computer vision tools, 
-                        full-stack web applications, and led cross-functional teams implementing advanced ML techniques for manufacturing analytics. 
-                        I'm passionate about solving hard technical problems through deep research and persistent focus.
+                    <p id="about-description">
+                        <!-- Filled in by script.js -->
                     </p>
                     <div class="stats">
                         <div class="stat">
-                            <span class="stat-number">5+</span>
+                            <span class="stat-number" id="years-experience">5+</span>
                             <span class="stat-label">Years ML Experience</span>
                         </div>
                         <div class="stat">
@@ -107,38 +104,7 @@
         <div class="container">
             <h2 class="section-title">Experience & Education</h2>
             <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-marker"></div>
-                    <div class="timeline-content">
-                        <h3>ML Engineer - Cricut</h3>
-                        <span class="timeline-period">August 2023 - Present</span>
-                        <p>Semantic font search with CLIP fine-tuning, ML recommendation systems, AWS EKS deployments, Swift plugin development</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-marker"></div>
-                    <div class="timeline-content">
-                        <h3>MS Computer Science - AI & ML</h3>
-                        <span class="timeline-period">Colorado State University Global (June 2024)</span>
-                        <p>GPA: 3.84/4.00 • Mars rover simulation for reinforcement learning research using Unity</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-marker"></div>
-                    <div class="timeline-content">
-                        <h3>Development Engineer - Autoliv</h3>
-                        <span class="timeline-period">August 2020 - August 2023</span>
-                        <p>CNN computer vision tools, manufacturing anomaly detection, cross-functional team leadership, 80% analysis time reduction</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-marker"></div>
-                    <div class="timeline-content">
-                        <h3>BS Mechanical Engineering</h3>
-                        <span class="timeline-period">BYU-Idaho (December 2020)</span>
-                        <p>GPA: 3.78/4.00 • Programming emphasis • Strong mathematical foundation</p>
-                    </div>
-                </div>
+                <!-- Timeline items will be dynamically loaded from resume.md -->
             </div>
         </div>
     </section>
@@ -195,97 +161,7 @@
         <div class="container">
             <h2 class="section-title">Featured Projects</h2>
             <div class="projects-grid">
-                <div class="project-card">
-                    <div class="project-image">
-                        <img src="images/projects/ai-text-adventure.jpg" alt="AI Text Adventure iOS Game">
-                        <div class="project-overlay">
-                            <a href="#" class="project-link"><i class="fas fa-mobile-alt"></i></a>
-                            <a href="#" class="project-link"><i class="fab fa-github"></i></a>
-                        </div>
-                    </div>
-                    <div class="project-content">
-                        <h3 class="project-title">AI Text Adventure iOS Game</h3>
-                        <p class="project-description">
-                            Innovative text-based adventure game leveraging Apple's Foundation LLM models 
-                            for dynamic story generation. Swift-based iOS interface with natural language 
-                            processing for immersive gaming experiences.
-                        </p>
-                        <div class="project-tech">
-                            <span class="tech-tag">Swift</span>
-                            <span class="tech-tag">iOS SDK</span>
-                            <span class="tech-tag">Apple Foundation Models</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="project-card">
-                    <div class="project-image">
-                        <img src="images/projects/moovmetrics.jpg" alt="Moovmetrics Fitness Tracking">
-                        <div class="project-overlay">
-                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i></a>
-                            <a href="#" class="project-link"><i class="fab fa-github"></i></a>
-                        </div>
-                    </div>
-                    <div class="project-content">
-                        <h3 class="project-title">Moovmetrics - Fitness Tracking</h3>
-                        <p class="project-description">
-                            Comprehensive full-stack fitness tracking application integrating Strava API 
-                            with Flask backend and SQLite database. Features secure user authentication, 
-                            interactive data visualizations, and responsive mobile design.
-                        </p>
-                        <div class="project-tech">
-                            <span class="tech-tag">Flask</span>
-                            <span class="tech-tag">SQLite</span>
-                            <span class="tech-tag">Strava API</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="project-card">
-                    <div class="project-image">
-                        <img src="images/projects/sheep-launcher-game.jpg" alt="Sheep Launcher Unity Game">
-                        <div class="project-overlay">
-                            <a href="sheep_launcher/index.html" target="_blank" class="project-link"><i class="fas fa-gamepad"></i></a>
-                            <a href="https://github.com/darthpreator/zpreator.github.io/tree/master/sheep_launcher" target="_blank" class="project-link"><i class="fab fa-github"></i></a>
-                        </div>
-                    </div>
-                    <div class="project-content">
-                        <h3 class="project-title">Sheep Launcher Game</h3>
-                        <p class="project-description">
-                            Interactive Unity WebGL game demonstrating object-oriented programming 
-                            principles and C# development. Features physics-based gameplay, 
-                            collision detection, and responsive game mechanics built with Unity engine.
-                        </p>
-                        <div class="project-tech">
-                            <span class="tech-tag">Unity</span>
-                            <span class="tech-tag">C#</span>
-                            <span class="tech-tag">WebGL</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="project-card">
-                    <div class="project-image">
-                        <img src="images/projects/intelligent-twitter-bot.jpg" alt="Intelligent Twitter Bot">
-                        <div class="project-overlay">
-                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i></a>
-                            <a href="#" class="project-link"><i class="fab fa-github"></i></a>
-                        </div>
-                    </div>
-                    <div class="project-content">
-                        <h3 class="project-title">Intelligent Twitter Bot</h3>
-                        <p class="project-description">
-                            Engineered automated content generation system using Twitter API, NLP techniques, 
-                            and Markov Chain algorithms. Creates humorous tweet generation with contextual 
-                            awareness leveraging LLMs for authentic-sounding content.
-                        </p>
-                        <div class="project-tech">
-                            <span class="tech-tag">Python</span>
-                            <span class="tech-tag">Tweepy</span>
-                            <span class="tech-tag">NLTK</span>
-                        </div>
-                    </div>
-                </div>
+                <!-- Projects will be dynamically loaded from content/projects/*.md -->
             </div>
         </div>
     </section>
@@ -346,5 +222,6 @@
     </footer>
 
     <script src="script.js"></script>
+    <script src="resume-pdf.js"></script>
 </body>
 </html>
