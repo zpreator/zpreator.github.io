@@ -81,159 +81,76 @@ async function generateResumePDF() {
 
         addLine();
 
-        // Summary
+        // Summary (no header label)
         if (formattedResume.summary) {
-            addText('SUMMARY', 12, 'bold', [99, 102, 241]);
             addText(formattedResume.summary, 10, 'normal', [60, 60, 60]);
             yPosition += 10;
         }
 
-        // Experience
-        if (formattedResume.experience && formattedResume.experience.length > 0) {
+        // Generic sections (Experience, Education, Projects, Technical Skills, etc.)
+        formattedResume.sections.forEach(section => {
             addLine();
-            addText('EXPERIENCE', 12, 'bold', [99, 102, 241]);
+            addText(section.name.toUpperCase(), 12, 'bold', [99, 102, 241]);
             
-            formattedResume.experience.forEach(exp => {
+            section.entries.forEach(entry => {
                 // Check for page break
                 if (yPosition > pageHeight - margin - 100) {
                     doc.addPage();
                     yPosition = margin;
                 }
                 
-                // Company and title
-                doc.setFontSize(11);
-                doc.setFont('helvetica', 'bold');
-                doc.setTextColor(31, 41, 55);
-                const titleLines = doc.splitTextToSize(`${exp.title} | ${exp.company}`, contentWidth);
-                doc.text(titleLines, margin, yPosition);
-                yPosition += titleLines.length * 13;
-                
-                // Location and date
-                doc.setFontSize(9);
-                doc.setFont('helvetica', 'normal');
-                doc.setTextColor(100, 100, 100);
-                doc.text(`${exp.location} • ${exp.date}`, margin, yPosition);
-                yPosition += 15;
-                
-                // Bullets
-                exp.bullets.forEach(bullet => {
-                    doc.setFontSize(10);
+                if (entry.inline) {
+                    // Inline format: Title: Subtitle (no separate lines)
+                    doc.setFontSize(9);
+                    doc.setFont('helvetica', 'bold');
                     doc.setTextColor(60, 60, 60);
-                    const bulletLines = doc.splitTextToSize('• ' + bullet, contentWidth - 10);
+                    const inlineText = `${entry.title}: `;
+                    doc.text(inlineText, margin, yPosition);
                     
-                    if (yPosition + (bulletLines.length * 12) > pageHeight - margin) {
-                        doc.addPage();
-                        yPosition = margin;
-                    }
-                    
-                    doc.text(bulletLines, margin + 5, yPosition);
-                    yPosition += bulletLines.length * 12;
-                });
-                
-                yPosition += 10;
-            });
-        }
-
-        // Education
-        if (formattedResume.education && formattedResume.education.length > 0) {
-            addLine();
-            addText('EDUCATION', 12, 'bold', [99, 102, 241]);
-            
-            formattedResume.education.forEach(edu => {
-                // Check for page break
-                if (yPosition > pageHeight - margin - 100) {
-                    doc.addPage();
-                    yPosition = margin;
-                }
-                
-                doc.setFontSize(11);
-                doc.setFont('helvetica', 'bold');
-                doc.setTextColor(31, 41, 55);
-                const degreeLines = doc.splitTextToSize(`${edu.degree} | ${edu.school}`, contentWidth);
-                doc.text(degreeLines, margin, yPosition);
-                yPosition += degreeLines.length * 13;
-                
-                doc.setFontSize(9);
-                doc.setFont('helvetica', 'normal');
-                doc.setTextColor(100, 100, 100);
-                doc.text(`${edu.location} • ${edu.date}`, margin, yPosition);
-                yPosition += 15;
-                
-                if (edu.details.length > 0) {
-                    edu.details.forEach(detail => {
-                        doc.setFontSize(10);
-                        doc.setTextColor(60, 60, 60);
-                        const detailLines = doc.splitTextToSize('• ' + detail, contentWidth - 10);
-                        doc.text(detailLines, margin + 5, yPosition);
-                        yPosition += detailLines.length * 12;
-                    });
-                }
-                
-                yPosition += 10;
-            });
-        }
-
-        // Projects
-        if (formattedResume.projects && formattedResume.projects.length > 0) {
-            addLine();
-            addText('PROJECTS', 12, 'bold', [99, 102, 241]);
-            
-            formattedResume.projects.forEach(project => {
-                // Check for page break
-                if (yPosition > pageHeight - margin - 100) {
-                    doc.addPage();
-                    yPosition = margin;
-                }
-                
-                // Project name and date
-                doc.setFontSize(11);
-                doc.setFont('helvetica', 'bold');
-                doc.setTextColor(31, 41, 55);
-                const projectTitle = project.date ? `${project.name} (${project.date})` : project.name;
-                const titleLines = doc.splitTextToSize(projectTitle, contentWidth);
-                doc.text(titleLines, margin, yPosition);
-                yPosition += titleLines.length * 13;
-                
-                // Project bullets
-                project.bullets.forEach(bullet => {
-                    doc.setFontSize(10);
+                    const titleWidth = doc.getTextWidth(inlineText);
                     doc.setFont('helvetica', 'normal');
-                    doc.setTextColor(60, 60, 60);
-                    const bulletLines = doc.splitTextToSize('• ' + bullet, contentWidth - 10);
+                    const subtitleLines = doc.splitTextToSize(entry.subtitle, contentWidth - titleWidth - 10);
+                    doc.text(subtitleLines, margin + titleWidth, yPosition);
+                    yPosition += subtitleLines.length * 12 + 5;
+                } else {
+                    // Standard format: Title on left, subtitle on right, bullets below
+                    doc.setFontSize(10);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setTextColor(31, 41, 55);
+                    doc.text(entry.title, margin, yPosition);
                     
-                    if (yPosition + (bulletLines.length * 12) > pageHeight - margin) {
-                        doc.addPage();
-                        yPosition = margin;
+                    // Subtitle (right-aligned, if present)
+                    if (entry.subtitle) {
+                        doc.setFontSize(9);
+                        doc.setFont('helvetica', 'normal');
+                        doc.setTextColor(100, 100, 100);
+                        
+                        const subtitleWidth = doc.getTextWidth(entry.subtitle);
+                        doc.text(entry.subtitle, pageWidth - margin - subtitleWidth, yPosition);
                     }
                     
-                    doc.text(bulletLines, margin + 5, yPosition);
-                    yPosition += bulletLines.length * 12;
-                });
-                
-                yPosition += 10;
+                    yPosition += 15;
+                    
+                    // Bullets
+                    entry.bullets.forEach(bullet => {
+                        doc.setFontSize(9);
+                        doc.setFont('helvetica', 'normal');
+                        doc.setTextColor(60, 60, 60);
+                        const bulletLines = doc.splitTextToSize('• ' + bullet, contentWidth - 10);
+                        
+                        if (yPosition + (bulletLines.length * 12) > pageHeight - margin) {
+                            doc.addPage();
+                            yPosition = margin;
+                        }
+                        
+                        doc.text(bulletLines, margin + 5, yPosition);
+                        yPosition += bulletLines.length * 12;
+                    });
+                    
+                    yPosition += 10;
+                }
             });
-        }
-
-        // Technical Skills
-        if (formattedResume.skills) {
-            addLine();
-            addText('TECHNICAL SKILLS', 12, 'bold', [99, 102, 241]);
-            
-            Object.entries(formattedResume.skills).forEach(([category, skillsList]) => {
-                doc.setFontSize(10);
-                doc.setFont('helvetica', 'bold');
-                doc.setTextColor(60, 60, 60);
-                
-                const categoryLines = doc.splitTextToSize(`${category}:`, contentWidth);
-                doc.text(categoryLines, margin, yPosition);
-                yPosition += 12;
-                
-                doc.setFont('helvetica', 'normal');
-                const skillsLines = doc.splitTextToSize(skillsList, contentWidth - 20);
-                doc.text(skillsLines, margin + 10, yPosition);
-                yPosition += skillsLines.length * 12 + 5;
-            });
-        }
+        });
 
         // Save the PDF
         doc.save('Zachary_Preator_Resume.pdf');
@@ -262,10 +179,7 @@ function parseResumeForPDF(markdown) {
         linkedin: '',
         github: '',
         summary: '',
-        experience: [],
-        education: [],
-        projects: [],
-        skills: {}
+        sections: [] // Generic sections array
     };
 
     // Extract name (first # heading)
@@ -293,106 +207,114 @@ function parseResumeForPDF(markdown) {
     const summaryMatch = markdown.match(/## Summary\s*\n\n(.*?)(?=\n\n## |$)/s);
     if (summaryMatch) resume.summary = summaryMatch[1].trim();
 
-    // Extract experience
-    const experienceMatch = markdown.match(/## Experience\s*\n\n(.*?)(?=\n## |$)/s);
-    if (experienceMatch) {
-        const expText = experienceMatch[1].trim();
-        const expEntries = expText.split(/\n(?=\*\*)/);
+    // Generic section parser - handles Experience, Education, Projects, Technical Skills, etc.
+    const sectionRegex = /## (Experience|Education|Projects|Technical Skills)\s*\n\n(.*?)(?=\n## |$)/gs;
+    let sectionMatch;
+    
+    while ((sectionMatch = sectionRegex.exec(markdown)) !== null) {
+        const sectionName = sectionMatch[1];
+        const sectionContent = sectionMatch[2].trim();
         
-        expEntries.forEach(entry => {
-            const headerMatch = entry.match(/\*\*(.*?),\s*(.*?)\*\*,?\s*(.*?)\s*-\s*\*(.*?)\*/);
-            if (headerMatch) {
-                const bullets = [];
-                const bulletMatches = entry.matchAll(/^- (.+)$/gm);
-                for (const match of bulletMatches) {
-                    bullets.push(match[1].replace(/\*\*/g, ''));
-                }
-                
-                resume.experience.push({
-                    company: headerMatch[1].trim(),
-                    title: headerMatch[2].trim(),
-                    location: headerMatch[3].trim(),
-                    date: headerMatch[4].trim(),
-                    bullets: bullets
+        const entries = [];
+        const entryBlocks = sectionContent.split(/\n(?=\*\*)/);
+        
+        entryBlocks.forEach(block => {
+            // Check if this is a single-line format (like Technical Skills)
+            const singleLineMatch = block.match(/\*\*([^:]+):\*\*\s*(.+)/);
+            
+            if (singleLineMatch) {
+                // Single line format: **Category:** items
+                entries.push({
+                    title: singleLineMatch[1].trim(),
+                    subtitle: singleLineMatch[2].trim(),
+                    bullets: [],
+                    inline: true // Flag to render inline
                 });
-            }
-        });
-    }
-
-    // Extract education
-    const educationMatch = markdown.match(/## Education\s*\n\n(.*?)(?=\n## |$)/s);
-    if (educationMatch) {
-        const eduText = educationMatch[1].trim();
-        const eduEntries = eduText.split(/\n(?=\*\*)/);
-        
-        eduEntries.forEach(entry => {
-            // Match pattern: **School Name**, Location - *Date*
-            const headerMatch = entry.match(/\*\*(.+?)\*\*,\s*(.+?)\s*-\s*\*(.+?)\*/);
-            if (headerMatch) {
-                const details = [];
-                const bulletMatches = entry.matchAll(/^- (.+)$/gm);
-                for (const match of bulletMatches) {
-                    details.push(match[1].replace(/\*\*/g, ''));
-                }
+            } else {
+                // Multi-line format with bullets
+                // Match only the first **...** on the first line
+                const lines = block.split('\n');
+                const firstLine = lines[0];
+                const firstLineMatch = firstLine.match(/^\*\*(.+?)\*\*(.*?)$/);
                 
-                // First bullet is typically the degree
-                const degree = details.length > 0 ? details[0] : '';
-                const otherDetails = details.slice(1);
-                
-                resume.education.push({
-                    school: headerMatch[1].trim(),
-                    degree: degree,
-                    location: headerMatch[2].trim(),
-                    date: headerMatch[3].trim(),
-                    details: otherDetails
-                });
-            }
-        });
-    }
-
-    // Extract projects
-    const projectsMatch = markdown.match(/## Projects\s*\n\n(.*?)(?=\n## |$)/s);
-    if (projectsMatch) {
-        const projectsText = projectsMatch[1].trim();
-        const projectEntries = projectsText.split(/\n(?=\*\*)/);
-        
-        projectEntries.forEach(entry => {
-            // Match pattern: **Project Name** *(Status, Date)*
-            const headerMatch = entry.match(/\*\*(.+?)\*\*\s*\*?\(?(.*?)\)?\.?\*?/);
-            if (headerMatch) {
-                const bullets = [];
-                const bulletMatches = entry.matchAll(/^- (.+)$/gm);
-                for (const match of bulletMatches) {
-                    // Skip the Technologies line
-                    if (!match[1].startsWith('**Technologies:**')) {
-                        bullets.push(match[1].replace(/\*\*/g, ''));
+                if (firstLineMatch) {
+                    const title = firstLineMatch[1].trim();
+                    const remainder = firstLineMatch[2].trim();
+                    
+                    let subtitle = '';
+                    
+                    if (remainder) {
+                        // Remove leading comma and whitespace
+                        let cleaned = remainder.replace(/^,\s*/, '');
+                        
+                        // Extract parts wrapped in * and parts not wrapped
+                        const parts = [];
+                        let current = '';
+                        let inAsterisk = false;
+                        
+                        for (let i = 0; i < cleaned.length; i++) {
+                            if (cleaned[i] === '*') {
+                                if (current.trim()) {
+                                    parts.push(current.trim());
+                                    current = '';
+                                }
+                                inAsterisk = !inAsterisk;
+                            } else {
+                                current += cleaned[i];
+                            }
+                        }
+                        if (current.trim()) {
+                            parts.push(current.trim());
+                        }
+                        
+                        // Clean up parts - remove trailing dashes and whitespace
+                        const cleanedParts = parts.map(p => p.replace(/\s*-\s*$/, '').trim()).filter(p => p);
+                        
+                        // Join with bullet
+                        subtitle = cleanedParts.join(' • ');
                     }
+                    
+                    // Extract bullets
+                    const bullets = [];
+                    const bulletMatches = block.matchAll(/^- (.+)$/gm);
+                    for (const match of bulletMatches) {
+                        // Skip lines that start with **Technologies:**
+                        if (!match[1].startsWith('**Technologies:**')) {
+                            bullets.push(match[1].replace(/\*\*/g, ''));
+                        }
+                    }
+                    
+                    entries.push({
+                        title: title,
+                        subtitle: subtitle,
+                        bullets: bullets,
+                        inline: false
+                    });
                 }
-                
-                resume.projects.push({
-                    name: headerMatch[1].trim(),
-                    date: headerMatch[2] ? headerMatch[2].trim() : '',
-                    bullets: bullets
-                });
             }
         });
-    }
-
-    // Extract technical skills
-    const skillsMatch = markdown.match(/## Technical Skills\s*\n\n(.*?)(?=\n## |$|$)/s);
-    if (skillsMatch) {
-        const skillsText = skillsMatch[1].trim();
-        const skillLines = skillsText.split('\n');
         
-        skillLines.forEach(line => {
-            const skillMatch = line.match(/\*\*(.+?):\*\*\s*(.+)/);
-            if (skillMatch) {
-                resume.skills[skillMatch[1].trim()] = skillMatch[2].trim();
-            }
+        resume.sections.push({
+            name: sectionName,
+            entries: entries
         });
     }
 
     return resume;
+}
+
+function parseSkillsSection(content) {
+    const skills = {};
+    const skillLines = content.split('\n');
+    
+    skillLines.forEach(line => {
+        const skillMatch = line.match(/\*\*(.+?):\*\*\s*(.+)/);
+        if (skillMatch) {
+            skills[skillMatch[1].trim()] = skillMatch[2].trim();
+        }
+    });
+    
+    return skills;
 }
 
 // Initialize on page load
