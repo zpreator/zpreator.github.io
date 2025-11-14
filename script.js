@@ -1,4 +1,6 @@
 // Mobile Navigation Toggle
+import { fetchAndParseResume } from './resume-parser.js';
+
 document.addEventListener('DOMContentLoaded', function() {
     // Dynamic content configuration
     const contentConfig = {
@@ -16,26 +18,19 @@ document.addEventListener('DOMContentLoaded', function() {
         return text.replace('{YEARS}', yearsExperience);
     }
     
-    // Function to extract summary and experience from resume.md
+    // Function to extract summary and experience from resume.md using common parser
     async function loadResumeContent() {
         try {
-            const response = await fetch('./resume.md');
-            const resumeText = await response.text();
+            const resume = await fetchAndParseResume();
             
-            // Extract the summary section
-            const summaryMatch = resumeText.match(/## Summary\s*\n\n(.*?)(?=\n\n## |$)/s);
-            if (summaryMatch) {
-                const summaryText = summaryMatch[1].trim();
-                
-                // Update hero description with resume summary
-                const heroDescription = document.getElementById('hero-description');
-                if (heroDescription) {
-                    heroDescription.innerHTML = replaceYearsPlaceholder(summaryText);
-                }
+            // Update hero description with resume summary
+            const heroDescription = document.getElementById('hero-description');
+            if (heroDescription && resume.summary) {
+                heroDescription.innerHTML = replaceYearsPlaceholder(resume.summary);
             }
             
-            // Extract and load experience section
-            loadExperienceFromResume(resumeText);
+            // Load experience and education sections
+            loadExperienceFromResume(resume);
             
         } catch (error) {
             console.warn('Could not load resume.md, using fallback text:', error);
@@ -47,15 +42,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Function to parse and load experience and education from resume
-    function loadExperienceFromResume(resumeText) {
+    // Function to parse and load experience and education from parsed resume data
+    function loadExperienceFromResume(resume) {
         try {
-            // Extract Experience section
-            const experienceMatch = resumeText.match(/## Experience\s*\n\n(.*?)(?=\n## |$)/s);
-            const educationMatch = resumeText.match(/## Education\s*\n\n(.*?)(?=\n## |$)/s);
-            
-            if (!experienceMatch && !educationMatch) return;
-            
             const timeline = document.querySelector('.timeline');
             if (!timeline) return;
             
@@ -64,24 +53,22 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const timelineItems = [];
             
-            // Parse experience entries
-            if (experienceMatch) {
-                const experienceText = experienceMatch[1].trim();
-                const expEntries = experienceText.split(/\n(?=\*\*)/);
-                
-                expEntries.forEach(entry => {
-                    const item = parseExperienceEntry(entry, 'experience');
+            // Find Experience and Education sections
+            const experienceSection = resume.sections.find(s => s.name === 'Experience');
+            const educationSection = resume.sections.find(s => s.name === 'Education');
+            
+            // Process experience entries
+            if (experienceSection) {
+                experienceSection.entries.forEach(entry => {
+                    const item = createTimelineItemFromEntry(entry, 'experience');
                     if (item) timelineItems.push(item);
                 });
             }
             
-            // Parse education entries
-            if (educationMatch) {
-                const educationText = educationMatch[1].trim();
-                const eduEntries = educationText.split(/\n(?=\*\*)/);
-                
-                eduEntries.forEach(entry => {
-                    const item = parseExperienceEntry(entry, 'education');
+            // Process education entries
+            if (educationSection) {
+                educationSection.entries.forEach(entry => {
+                    const item = createTimelineItemFromEntry(entry, 'education');
                     if (item) timelineItems.push(item);
                 });
             }
@@ -123,51 +110,47 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Function to parse individual experience or education entry
-    function parseExperienceEntry(entry, type) {
+    // Helper function to create timeline item from parsed entry
+    function createTimelineItemFromEntry(entry, type) {
         try {
-            // Match pattern: **Company/School, Title/Degree**, Location - *Date*
-            // OR: **School**, Location - *Date* (for education)
-            let headerMatch = entry.match(/\*\*(.*?),\s*(.*?)\*\*,?\s*(.*?)\s*-\s*\*(.*?)\*/);
-            
-            // If no match, try simpler pattern for education: **School**, Location - *Date*
-            if (!headerMatch) {
-                headerMatch = entry.match(/\*\*(.*?)\*\*,\s*(.*?)\s*-\s*\*(.*?)\*/);
-                if (headerMatch && type === 'education') {
-                    // For education without title in header
-                    const [_, org, location, dateRange] = headerMatch;
-                    
-                    // Extract first bullet as the degree/title
-                    const firstBulletMatch = entry.match(/^- (.+)$/m);
-                    const title = firstBulletMatch ? firstBulletMatch[1] : 'Degree';
-                    
-                    // Extract remaining bullets
-                    const bullets = [];
-                    const bulletMatches = entry.matchAll(/^- (.+)$/gm);
-                    let first = true;
-                    for (const match of bulletMatches) {
-                        if (first) {
-                            first = false;
-                            continue; // Skip first bullet as it's the title
-                        }
-                        bullets.push(match[1]);
-                    }
-                    
-                    return createTimelineItem(org, title, location, dateRange, bullets, type);
-                }
+            if (entry.inline) {
+                // Skip inline entries (like Technical Skills)
                 return null;
             }
             
-            const [_, org, title, location, dateRange] = headerMatch;
+            // Create timeline item
+            const timelineItem = document.createElement('div');
+            timelineItem.className = 'timeline-item';
             
-            // Extract bullet points
-            const bullets = [];
-            const bulletMatches = entry.matchAll(/^- (.+)$/gm);
-            for (const match of bulletMatches) {
-                bullets.push(match[1]);
+            // Determine sort date (use sub subtitle for date parsing)
+            let sortDate = new Date();
+            if (entry.subSubtitle.toLowerCase().includes('present')) {
+                sortDate = new Date();
+            } else {
+                // Try to parse the date
+                const dateMatch = entry.subSubtitle.match(/\w+ \d{4}/g);
+                if (dateMatch && dateMatch.length > 0) {
+                    const lastDate = dateMatch[dateMatch.length - 1];
+                    sortDate = new Date(lastDate);
+                }
             }
             
-            return createTimelineItem(org, title, location, dateRange, bullets, type);
+            // Format bullets as HTML list items
+            const bulletsHTML = entry.bullets.length > 0 
+                ? '<ul>' + entry.bullets.map(b => `<li>${b}</li>`).join('') + '</ul>'
+                : '';
+            
+            // Format: Title (bold) subtitle (normal, lighter) on same line, sub subtitle below in purple, then bullets
+            timelineItem.innerHTML = `
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                    <h3>${entry.title} <span style="font-weight: normal; color: #888; font-size: 0.9em;">${entry.subtitle}</span></h3>
+                    <span class="timeline-period">${entry.subSubtitle}</span>
+                    ${bulletsHTML}
+                </div>
+            `;
+            
+            return { element: timelineItem, sortDate: sortDate, type: type };
             
         } catch (error) {
             console.warn('Error parsing entry:', error);
@@ -175,53 +158,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Helper function to create timeline item
-    function createTimelineItem(org, title, location, dateRange, bullets, type) {
-        // Create timeline item
-        const timelineItem = document.createElement('div');
-        timelineItem.className = 'timeline-item';
-        
-        // Determine sort date (use end date or "Present")
-        let sortDate = new Date();
-        if (dateRange.toLowerCase().includes('present')) {
-            sortDate = new Date();
-        } else {
-            // Try to parse the date
-            const dateMatch = dateRange.match(/\w+ \d{4}/g);
-            if (dateMatch && dateMatch.length > 0) {
-                const lastDate = dateMatch[dateMatch.length - 1];
-                sortDate = new Date(lastDate);
-            }
-        }
-        
-        // Format display based on type
-        let displayTitle, displayPeriod, displayDescription;
-        
-        if (type === 'education') {
-            displayTitle = title;
-            displayPeriod = `${org} (${dateRange})`;
-            displayDescription = bullets.join(' • ');
-        } else {
-            displayTitle = `${title} - ${org}`;
-            displayPeriod = dateRange;
-            // Combine bullets into a concise summary
-            displayDescription = bullets.map(b => {
-                // Remove bold markdown
-                return b.replace(/\*\*(.*?)\*\*/g, '$1');
-            }).join(' • ');
-        }
-        
-        timelineItem.innerHTML = `
-            <div class="timeline-marker"></div>
-            <div class="timeline-content">
-                <h3>${displayTitle}</h3>
-                <span class="timeline-period">${displayPeriod}</span>
-                <p>${displayDescription}</p>
-            </div>
-        `;
-        
-        return { element: timelineItem, sortDate: sortDate, type: type };
-    }
     
     // Function to load about content from markdown
     async function loadAboutContent() {

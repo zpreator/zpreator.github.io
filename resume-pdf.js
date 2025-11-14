@@ -1,6 +1,8 @@
 // PDF Resume Generator - Pure JavaScript
 // Generates PDF from resume.md on-the-fly
 
+import { fetchAndParseResume } from './resume-parser.js';
+
 async function generateResumePDF() {
     try {
         // Show loading state
@@ -9,12 +11,8 @@ async function generateResumePDF() {
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating PDF...';
         btn.disabled = true;
 
-        // Fetch resume.md
-        const response = await fetch('./resume.md');
-        const resumeText = await response.text();
-
-        // Parse and convert markdown to formatted text
-        const formattedResume = parseResumeForPDF(resumeText);
+        // Fetch and parse resume using common parser
+        const formattedResume = await fetchAndParseResume();
 
         // Generate PDF using jsPDF
         const { jsPDF } = window.jspdf;
@@ -113,20 +111,33 @@ async function generateResumePDF() {
                     doc.text(subtitleLines, margin + titleWidth, yPosition);
                     yPosition += subtitleLines.length * 12 + 5;
                 } else {
-                    // Standard format: Title on left, subtitle on right, bullets below
+                    // Standard format: 
+                    // Title (bold) on left with subtitle (normal) right after it
+                    // Sub subtitle (normal) right-aligned on same line
                     doc.setFontSize(10);
                     doc.setFont('helvetica', 'bold');
                     doc.setTextColor(31, 41, 55);
-                    doc.text(entry.title, margin, yPosition);
                     
-                    // Subtitle (right-aligned, if present)
+                    // Title
+                    doc.text(entry.title, margin, yPosition);
+                    const titleWidth = doc.getTextWidth(entry.title);
+                    
+                    // Subtitle (non-bold, right after title)
                     if (entry.subtitle) {
+                        doc.setFontSize(9);
+                        doc.setFont('helvetica', 'normal');
+                        doc.setTextColor(60, 60, 60);
+                        doc.text(', ' + entry.subtitle, margin + titleWidth, yPosition);
+                    }
+                    
+                    // Sub subtitle (right-aligned)
+                    if (entry.subSubtitle) {
                         doc.setFontSize(9);
                         doc.setFont('helvetica', 'normal');
                         doc.setTextColor(100, 100, 100);
                         
-                        const subtitleWidth = doc.getTextWidth(entry.subtitle);
-                        doc.text(entry.subtitle, pageWidth - margin - subtitleWidth, yPosition);
+                        const subSubtitleWidth = doc.getTextWidth(entry.subSubtitle);
+                        doc.text(entry.subSubtitle, pageWidth - margin - subSubtitleWidth, yPosition);
                     }
                     
                     yPosition += 15;
@@ -168,153 +179,6 @@ async function generateResumePDF() {
         btn.innerHTML = '<i class="fas fa-download"></i> Download Resume';
         btn.disabled = false;
     }
-}
-
-function parseResumeForPDF(markdown) {
-    const resume = {
-        name: '',
-        title: '',
-        email: '',
-        location: '',
-        linkedin: '',
-        github: '',
-        summary: '',
-        sections: [] // Generic sections array
-    };
-
-    // Extract name (first # heading)
-    const nameMatch = markdown.match(/^# (.+)$/m);
-    if (nameMatch) resume.name = nameMatch[1].trim();
-
-    // Extract title (bold text after name, typically)
-    const titleMatch = markdown.match(/\*\*(.+?)\*\*/);
-    if (titleMatch) resume.title = titleMatch[1].trim();
-
-    // Extract contact info
-    const emailMatch = markdown.match(/📧.*?\[([^\]]+)\]/);
-    if (emailMatch) resume.email = emailMatch[1];
-
-    const locationMatch = markdown.match(/📍 Location: (.+)$/m);
-    if (locationMatch) resume.location = locationMatch[1].trim();
-
-    const linkedinMatch = markdown.match(/🔗.*?\[([^\]]+)\]/);
-    if (linkedinMatch) resume.linkedin = linkedinMatch[1];
-
-    const githubMatch = markdown.match(/🐙.*?\[([^\]]+)\]/);
-    if (githubMatch) resume.github = githubMatch[1];
-
-    // Extract summary
-    const summaryMatch = markdown.match(/## Summary\s*\n\n(.*?)(?=\n\n## |$)/s);
-    if (summaryMatch) resume.summary = summaryMatch[1].trim();
-
-    // Generic section parser - handles Experience, Education, Projects, Technical Skills, etc.
-    const sectionRegex = /## (Experience|Education|Projects|Technical Skills)\s*\n\n(.*?)(?=\n## |$)/gs;
-    let sectionMatch;
-    
-    while ((sectionMatch = sectionRegex.exec(markdown)) !== null) {
-        const sectionName = sectionMatch[1];
-        const sectionContent = sectionMatch[2].trim();
-        
-        const entries = [];
-        const entryBlocks = sectionContent.split(/\n(?=\*\*)/);
-        
-        entryBlocks.forEach(block => {
-            // Check if this is a single-line format (like Technical Skills)
-            const singleLineMatch = block.match(/\*\*([^:]+):\*\*\s*(.+)/);
-            
-            if (singleLineMatch) {
-                // Single line format: **Category:** items
-                entries.push({
-                    title: singleLineMatch[1].trim(),
-                    subtitle: singleLineMatch[2].trim(),
-                    bullets: [],
-                    inline: true // Flag to render inline
-                });
-            } else {
-                // Multi-line format with bullets
-                // Match only the first **...** on the first line
-                const lines = block.split('\n');
-                const firstLine = lines[0];
-                const firstLineMatch = firstLine.match(/^\*\*(.+?)\*\*(.*?)$/);
-                
-                if (firstLineMatch) {
-                    const title = firstLineMatch[1].trim();
-                    const remainder = firstLineMatch[2].trim();
-                    
-                    let subtitle = '';
-                    
-                    if (remainder) {
-                        // Remove leading comma and whitespace
-                        let cleaned = remainder.replace(/^,\s*/, '');
-                        
-                        // Extract parts wrapped in * and parts not wrapped
-                        const parts = [];
-                        let current = '';
-                        let inAsterisk = false;
-                        
-                        for (let i = 0; i < cleaned.length; i++) {
-                            if (cleaned[i] === '*') {
-                                if (current.trim()) {
-                                    parts.push(current.trim());
-                                    current = '';
-                                }
-                                inAsterisk = !inAsterisk;
-                            } else {
-                                current += cleaned[i];
-                            }
-                        }
-                        if (current.trim()) {
-                            parts.push(current.trim());
-                        }
-                        
-                        // Clean up parts - remove trailing dashes and whitespace
-                        const cleanedParts = parts.map(p => p.replace(/\s*-\s*$/, '').trim()).filter(p => p);
-                        
-                        // Join with bullet
-                        subtitle = cleanedParts.join(' • ');
-                    }
-                    
-                    // Extract bullets
-                    const bullets = [];
-                    const bulletMatches = block.matchAll(/^- (.+)$/gm);
-                    for (const match of bulletMatches) {
-                        // Skip lines that start with **Technologies:**
-                        if (!match[1].startsWith('**Technologies:**')) {
-                            bullets.push(match[1].replace(/\*\*/g, ''));
-                        }
-                    }
-                    
-                    entries.push({
-                        title: title,
-                        subtitle: subtitle,
-                        bullets: bullets,
-                        inline: false
-                    });
-                }
-            }
-        });
-        
-        resume.sections.push({
-            name: sectionName,
-            entries: entries
-        });
-    }
-
-    return resume;
-}
-
-function parseSkillsSection(content) {
-    const skills = {};
-    const skillLines = content.split('\n');
-    
-    skillLines.forEach(line => {
-        const skillMatch = line.match(/\*\*(.+?):\*\*\s*(.+)/);
-        if (skillMatch) {
-            skills[skillMatch[1].trim()] = skillMatch[2].trim();
-        }
-    });
-    
-    return skills;
 }
 
 // Initialize on page load
