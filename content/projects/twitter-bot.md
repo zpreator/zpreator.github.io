@@ -1,4 +1,4 @@
-# Intelligent Twitter Bot
+# Twitter Bot
 
 ## Description
 Engineered automated content generation system using Twitter API, NLP techniques, and Markov Chain algorithms. Creates humorous tweet generation with contextual awareness leveraging LLMs for authentic-sounding content.
@@ -8,14 +8,14 @@ Engineered automated content generation system using Twitter API, NLP techniques
 - Created humorous tweet generation with contextual awareness leveraging LLMs
 
 ## Technologies
-Python, Tweepy, NLTK, Markov Chains
+Python, NLP, Markov Chains, LLMs
 
 ## Links
 - website: 
-- github: 
+- github: https://github.com/zpreator/TwitterBot
 
 ## Image
-intelligent-twitter-bot.jpg
+twitter-bot.png
 
 ## Status
 Complete

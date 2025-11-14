@@ -12,10 +12,13 @@ Flask, SQLite, JavaScript, HTML/CSS, Strava API
 
 ## Links
 - website: 
-- github: 
+- github: https://github.com/zpreator/moovmetrics
 
 ## Image
 moovmetrics.jpg
+
+## Video
+moovmetrics-demo.mp4
 
 ## Status
 Active

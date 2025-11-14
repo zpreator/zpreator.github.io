@@ -86,11 +86,35 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
             
-            // Sort by date (most recent first)
-            timelineItems.sort((a, b) => b.sortDate - a.sortDate);
+            // Separate experience and education items
+            const experienceItems = timelineItems.filter(item => item.type === 'experience');
+            const educationItems = timelineItems.filter(item => item.type === 'education');
             
-            // Add to timeline
-            timelineItems.forEach(item => {
+            // Sort each group by date (most recent first)
+            experienceItems.sort((a, b) => b.sortDate - a.sortDate);
+            educationItems.sort((a, b) => b.sortDate - a.sortDate);
+            
+            // Add experience header
+            const expSeparator = document.createElement('div');
+            expSeparator.className = 'timeline-separator';
+            expSeparator.innerHTML = '<span>Experience 💼✨</span>';
+            timeline.appendChild(expSeparator);
+            
+            // Add experience items to timeline
+            experienceItems.forEach(item => {
+                timeline.appendChild(item.element);
+            });
+            
+            // Add separator if we have both experience and education
+            if (experienceItems.length > 0 && educationItems.length > 0) {
+                const separator = document.createElement('div');
+                separator.className = 'timeline-separator';
+                separator.innerHTML = '<span>Education 🎓✨</span>';
+                timeline.appendChild(separator);
+            }
+            
+            // Add education items to timeline
+            educationItems.forEach(item => {
                 timeline.appendChild(item.element);
             });
             
@@ -103,8 +127,36 @@ document.addEventListener('DOMContentLoaded', function() {
     function parseExperienceEntry(entry, type) {
         try {
             // Match pattern: **Company/School, Title/Degree**, Location - *Date*
-            const headerMatch = entry.match(/\*\*(.*?),\s*(.*?)\*\*,?\s*(.*?)\s*-\s*\*(.*?)\*/);
-            if (!headerMatch) return null;
+            // OR: **School**, Location - *Date* (for education)
+            let headerMatch = entry.match(/\*\*(.*?),\s*(.*?)\*\*,?\s*(.*?)\s*-\s*\*(.*?)\*/);
+            
+            // If no match, try simpler pattern for education: **School**, Location - *Date*
+            if (!headerMatch) {
+                headerMatch = entry.match(/\*\*(.*?)\*\*,\s*(.*?)\s*-\s*\*(.*?)\*/);
+                if (headerMatch && type === 'education') {
+                    // For education without title in header
+                    const [_, org, location, dateRange] = headerMatch;
+                    
+                    // Extract first bullet as the degree/title
+                    const firstBulletMatch = entry.match(/^- (.+)$/m);
+                    const title = firstBulletMatch ? firstBulletMatch[1] : 'Degree';
+                    
+                    // Extract remaining bullets
+                    const bullets = [];
+                    const bulletMatches = entry.matchAll(/^- (.+)$/gm);
+                    let first = true;
+                    for (const match of bulletMatches) {
+                        if (first) {
+                            first = false;
+                            continue; // Skip first bullet as it's the title
+                        }
+                        bullets.push(match[1]);
+                    }
+                    
+                    return createTimelineItem(org, title, location, dateRange, bullets, type);
+                }
+                return null;
+            }
             
             const [_, org, title, location, dateRange] = headerMatch;
             
@@ -115,54 +167,60 @@ document.addEventListener('DOMContentLoaded', function() {
                 bullets.push(match[1]);
             }
             
-            // Create timeline item
-            const timelineItem = document.createElement('div');
-            timelineItem.className = 'timeline-item';
+            return createTimelineItem(org, title, location, dateRange, bullets, type);
             
-            // Determine sort date (use end date or "Present")
-            let sortDate = new Date();
-            if (dateRange.toLowerCase().includes('present')) {
-                sortDate = new Date();
-            } else {
-                // Try to parse the date
-                const dateMatch = dateRange.match(/\w+ \d{4}/g);
-                if (dateMatch && dateMatch.length > 0) {
-                    const lastDate = dateMatch[dateMatch.length - 1];
-                    sortDate = new Date(lastDate);
-                }
-            }
-            
-            // Format display based on type
-            let displayTitle, displayPeriod, displayDescription;
-            
-            if (type === 'education') {
-                displayTitle = title;
-                displayPeriod = `${org} (${dateRange})`;
-                displayDescription = bullets.join(' • ');
-            } else {
-                displayTitle = `${title} - ${org}`;
-                displayPeriod = dateRange;
-                // Combine bullets into a concise summary
-                displayDescription = bullets.map(b => {
-                    // Remove bold markdown
-                    return b.replace(/\*\*(.*?)\*\*/g, '$1');
-                }).join(' • ');
-            }
-            
-            timelineItem.innerHTML = `
-                <div class="timeline-marker"></div>
-                <div class="timeline-content">
-                    <h3>${displayTitle}</h3>
-                    <span class="timeline-period">${displayPeriod}</span>
-                    <p>${displayDescription}</p>
-                </div>
-            `;
-            
-            return { element: timelineItem, sortDate: sortDate };
         } catch (error) {
             console.warn('Error parsing entry:', error);
             return null;
         }
+    }
+    
+    // Helper function to create timeline item
+    function createTimelineItem(org, title, location, dateRange, bullets, type) {
+        // Create timeline item
+        const timelineItem = document.createElement('div');
+        timelineItem.className = 'timeline-item';
+        
+        // Determine sort date (use end date or "Present")
+        let sortDate = new Date();
+        if (dateRange.toLowerCase().includes('present')) {
+            sortDate = new Date();
+        } else {
+            // Try to parse the date
+            const dateMatch = dateRange.match(/\w+ \d{4}/g);
+            if (dateMatch && dateMatch.length > 0) {
+                const lastDate = dateMatch[dateMatch.length - 1];
+                sortDate = new Date(lastDate);
+            }
+        }
+        
+        // Format display based on type
+        let displayTitle, displayPeriod, displayDescription;
+        
+        if (type === 'education') {
+            displayTitle = title;
+            displayPeriod = `${org} (${dateRange})`;
+            displayDescription = bullets.join(' • ');
+        } else {
+            displayTitle = `${title} - ${org}`;
+            displayPeriod = dateRange;
+            // Combine bullets into a concise summary
+            displayDescription = bullets.map(b => {
+                // Remove bold markdown
+                return b.replace(/\*\*(.*?)\*\*/g, '$1');
+            }).join(' • ');
+        }
+        
+        timelineItem.innerHTML = `
+            <div class="timeline-marker"></div>
+            <div class="timeline-content">
+                <h3>${displayTitle}</h3>
+                <span class="timeline-period">${displayPeriod}</span>
+                <p>${displayDescription}</p>
+            </div>
+        `;
+        
+        return { element: timelineItem, sortDate: sortDate, type: type };
     }
     
     // Function to load about content from markdown

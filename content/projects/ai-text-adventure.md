@@ -11,11 +11,13 @@ Innovative text-based adventure game leveraging Apple's Foundation LLM models fo
 Swift, iOS SDK, Apple Foundation Models
 
 ## Links
-- app_store: 
-- github: 
+- github: https://github.com/zpreator/TextQuest
 
 ## Image
 ai-text-adventure.jpg
+
+## Video
+ai-text-adventure-demo.mp4
 
 ## Status
 Prototype
