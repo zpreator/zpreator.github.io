@@ -25,7 +25,7 @@ async function generateResumePDF() {
         // Page setup
         const pageWidth = doc.internal.pageSize.getWidth();
         const pageHeight = doc.internal.pageSize.getHeight();
-        const margin = 50;
+        const margin = 30;
         const contentWidth = pageWidth - (margin * 2);
         let yPosition = margin;
 

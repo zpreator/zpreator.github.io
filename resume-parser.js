@@ -175,7 +175,7 @@ function parseMultiLineEntry(block) {
     // Generic match: **title**, subtitle - *sub subtitle*
     // This captures everything in bold as title, everything between ** and the last - before *, 
     // and everything in * as sub subtitle
-    const match = firstLine.match(/^\*\*(.+?)\*\*,?\s*(.*?)\s*-\s*\*(.+?)\*\s*$/);
+    const match = firstLine.match(/^\*\*(.+?)\*\*,?\s*(.*?)\s*[-—]\s*\*(.+?)\*\s*$/);
     
     if (match) {
         const [_, title, subtitle, subSubtitle] = match;
