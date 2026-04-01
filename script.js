@@ -257,14 +257,16 @@ document.addEventListener('DOMContentLoaded', function() {
             github: 'fab fa-github',
             demo: 'fas fa-gamepad',
             website: 'fas fa-external-link-alt',
-            app_store: 'fas fa-mobile-alt'
+            app_store: 'fas fa-mobile-alt',
+            download: 'fas fa-download'
         };
-        
+
         const linkLabels = {
             github: 'GitHub',
             demo: 'Demo',
             website: 'Website',
-            app_store: 'App Store'
+            app_store: 'App Store',
+            download: 'Download'
         };
         
         Object.entries(project.links).forEach(([type, url]) => {
@@ -282,15 +284,17 @@ document.addEventListener('DOMContentLoaded', function() {
         ).join('');
         
         // Create media HTML (video or image)
+        // If image path already contains a slash it's relative to root, otherwise prefix with images/projects/
+        const imgSrc = project.image.includes('/') ? project.image : `images/projects/${project.image}`;
         let mediaHTML = '';
         if (project.video) {
             mediaHTML = `
-                <video class="project-video" muted loop playsinline preload="metadata" poster="images/projects/${project.image}">
+                <video class="project-video" muted loop playsinline preload="metadata" poster="${imgSrc}">
                     <source src="images/projects/${project.video}" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>`;
         } else {
-            mediaHTML = `<img src="images/projects/${project.image}" alt="${project.title}">`;
+            mediaHTML = `<img src="${imgSrc}" alt="${project.title}">`;
         }
         
         card.innerHTML = `
@@ -362,6 +366,7 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             // List of project files (you can expand this or make it dynamic)
             const projectFiles = [
+                'cachecow.md',
                 'ai-text-adventure.md',
                 'moovmetrics.md',
                 'sheep-launcher.md',

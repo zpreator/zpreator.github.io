@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CacheCow - Download</title>
+    <meta name="description" content="CacheCow — Download the latest release for macOS, Windows, or Linux.">
+    <link rel="icon" href="../images/cachecow/cow-head.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Minimal nav */
+        .cc-nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .cc-nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Hero */
+        .cc-hero {
+            padding: 140px 20px 80px;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            text-align: center;
+        }
+        .cc-app-icon {
+            width: 96px;
+            height: 96px;
+            border-radius: 22px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+        }
+        .cc-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .cc-tagline {
+            font-size: 1.25rem;
+            color: #64748b;
+            margin-bottom: 1.5rem;
+        }
+        .cc-version-badge {
+            display: inline-block;
+            background: linear-gradient(45deg, #6366f1, #8b5cf6);
+            color: white;
+            padding: 0.35rem 1.1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Download buttons */
+        .cc-downloads {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 2.5rem;
+        }
+        .cc-download-btn {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            min-width: 180px;
+            cursor: pointer;
+        }
+        .cc-download-btn i { font-size: 1.8rem; }
+        .cc-download-btn small {
+            font-size: 0.75rem;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+        .cc-download-btn.primary {
+            background: linear-gradient(45deg, #6366f1, #8b5cf6);
+            color: white;
+            border: none;
+        }
+        .cc-download-btn.primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(99, 102, 241, 0.35);
+        }
+        .cc-download-btn.outline {
+            background: white;
+            color: #374151;
+            border: 2px solid #e5e7eb;
+        }
+        .cc-download-btn.outline:hover {
+            border-color: #6366f1;
+            color: #6366f1;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+        .cc-download-btn[hidden] { display: none; }
+        .cc-hero-status {
+            margin-top: 1.25rem;
+            color: #94a3b8;
+            font-size: 0.875rem;
+            min-height: 1.2em;
+        }
+
+        /* Linux one-liner */
+        .cc-linux-section {
+            padding: 50px 20px;
+            background: white;
+            display: none;
+        }
+        .cc-linux-section.visible {
+            display: block;
+        }
+        .cc-linux-inner {
+            max-width: 720px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .cc-linux-inner h3 {
+            font-size: 1.05rem;
+            color: #64748b;
+            margin-bottom: 1rem;
+        }
+        .cc-code-block {
+            background: #1a1a1a;
+            color: #e2e8f0;
+            padding: 1.1rem 1.4rem;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            text-align: left;
+        }
+        .cc-copy-btn {
+            background: #374151;
+            color: #e2e8f0;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+            transition: background 0.2s;
+            font-family: inherit;
+        }
+        .cc-copy-btn:hover { background: #6366f1; }
+
+        /* Features */
+        .cc-features {
+            padding: 80px 20px;
+            background: #f8fafc;
+        }
+        .cc-features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            max-width: 960px;
+            margin: 0 auto;
+        }
+        .cc-feature-card {
+            background: white;
+            padding: 1.75rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        .cc-feature-card:hover { transform: translateY(-5px); }
+        .cc-feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .cc-feature-card h3 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1a1a1a;
+        }
+        .cc-feature-card p {
+            color: #64748b;
+            font-size: 0.875rem;
+            line-height: 1.55;
+        }
+
+        /* Version history */
+        .cc-history {
+            padding: 80px 20px;
+            background: white;
+        }
+        .cc-history-status {
+            text-align: center;
+            color: #64748b;
+            padding: 2rem;
+        }
+        .cc-version-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .cc-version-table th {
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid #e5e7eb;
+            color: #374151;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+        .cc-version-table td {
+            padding: 0.9rem 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+        .cc-version-table tr:hover td { background: #f8fafc; }
+        .cc-version-tag {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        .cc-version-date {
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+        .cc-latest-badge {
+            display: inline-block;
+            background: #dcfce7;
+            color: #16a34a;
+            padding: 0.15rem 0.55rem;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+        }
+        .cc-platform-links {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+        }
+        .cc-dl-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            color: #6366f1;
+            text-decoration: none;
+            font-size: 0.82rem;
+            font-weight: 500;
+            padding: 0.3rem 0.65rem;
+            border-radius: 6px;
+            background: #f3f4f6;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .cc-dl-link:hover {
+            background: #6366f1;
+            color: white;
+        }
+        .cc-github-ref {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-top: 2rem;
+            transition: color 0.2s;
+        }
+        .cc-github-ref:hover { color: #6366f1; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .cc-title { font-size: 2.5rem; }
+            .cc-download-btn { min-width: 150px; padding: 0.85rem 1.2rem; }
+            .cc-version-table th:nth-child(2),
+            .cc-version-table td:nth-child(2) { display: none; }
+        }
+        @media (max-width: 480px) {
+            .cc-title { font-size: 2rem; }
+            .cc-downloads { flex-direction: column; align-items: center; }
+            .cc-download-btn { width: 100%; max-width: 300px; }
+            .cc-code-block { font-size: 0.78rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="cc-nav">
+        <div class="cc-nav-inner">
+            <a href="/" class="nav-logo">ZP</a>
+            <a href="/" class="btn btn-outline" style="padding: 0.5rem 1.1rem; font-size: 0.875rem;">
+                <i class="fas fa-arrow-left"></i> Portfolio
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="cc-hero">
+        <img src="../images/cachecow/cow-head.png" alt="CacheCow icon" class="cc-app-icon">
+        <h1 class="cc-title"><span class="highlight">CacheCow</span></h1>
+        <p class="cc-tagline">Your videos. Your time.</p>
+        <span class="cc-version-badge" id="latest-version">Loading…</span>
+
+        <div class="cc-downloads">
+            <a id="btn-mac" href="#" class="cc-download-btn primary" hidden>
+                <i class="fab fa-apple"></i>
+                <span>Download for macOS</span>
+                <small>Apple Silicon (.dmg)</small>
+            </a>
+            <a id="btn-windows" href="#" class="cc-download-btn outline" hidden>
+                <i class="fab fa-windows"></i>
+                <span>Download for Windows</span>
+                <small>64-bit installer (.exe)</small>
+            </a>
+            <button id="btn-linux" class="cc-download-btn outline" onclick="showLinuxInstall()">
+                <i class="fab fa-linux"></i>
+                <span>Install on Linux</span>
+                <small>Show install command</small>
+            </button>
+        </div>
+        <p class="cc-hero-status" id="hero-status">Fetching latest release…</p>
+    </section>
+
+    <!-- Linux one-liner -->
+    <div class="cc-linux-section" id="linux-section">
+        <div class="cc-linux-inner">
+            <h3><i class="fab fa-linux"></i> &nbsp;Linux / Server — one-liner install</h3>
+            <div class="cc-code-block">
+                <code id="linux-cmd">curl -sSL https://github.com/zpreator/CacheCow/releases/latest/download/install.sh | bash</code>
+                <button class="cc-copy-btn" onclick="copyCmd()">
+                    <i class="fas fa-copy"></i> Copy
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features -->
+    <section class="cc-features">
+        <div class="container">
+            <h2 class="section-title">Why CacheCow?</h2>
+            <div class="cc-features-grid">
+                <div class="cc-feature-card">
+                    <div class="cc-feature-icon"><i class="fas fa-sliders-h"></i></div>
+                    <h3>You're the Algorithm</h3>
+                    <p>No recommendations, no rabbit holes. Save exactly the videos you want to watch — nothing more, nothing less.</p>
+                </div>
+                <div class="cc-feature-card">
+                    <div class="cc-feature-icon"><i class="fas fa-play-circle"></i></div>
+                    <h3>YouTube &amp; TikTok</h3>
+                    <p>Works with the platforms you already use. More sources on the way.</p>
+                </div>
+                <div class="cc-feature-card">
+                    <div class="cc-feature-icon"><i class="fas fa-wifi"></i></div>
+                    <h3>Watch Without Wi-Fi</h3>
+                    <p>Videos live on your device. Watch anytime, anywhere — no internet, no buffering, no distractions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Version History -->
+    <section class="cc-history">
+        <div class="container">
+            <h2 class="section-title">Version History</h2>
+            <div id="history-container">
+                <p class="cc-history-status">
+                    <i class="fas fa-spinner fa-spin"></i> Loading releases…
+                </p>
+            </div>
+            <div style="text-align: center;">
+                <a href="https://github.com/zpreator/CacheCow/releases"
+                   target="_blank" class="cc-github-ref">
+                    <i class="fab fa-github"></i> View all releases on GitHub
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Zachary Preator. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/zpreator/CacheCow" target="_blank" title="CacheCow on GitHub">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="https://zpreator.github.io" target="_blank" title="Portfolio">
+                    <i class="fas fa-globe"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const REPO = 'zpreator/CacheCow';
+        const API = `https://api.github.com/repos/${REPO}/releases`;
+
+        function parseAssets(assets) {
+            const out = { mac: null, windows: null, linux: null };
+            for (const a of assets) {
+                if (a.name.endsWith('_aarch64.dmg'))     out.mac     = a.browser_download_url;
+                else if (a.name.endsWith('_x64-setup.exe')) out.windows = a.browser_download_url;
+                else if (a.name === 'install.sh')         out.linux   = a.browser_download_url;
+            }
+            return out;
+        }
+
+        function fmtDate(iso) {
+            return new Date(iso).toLocaleDateString('en-US', {
+                year: 'numeric', month: 'short', day: 'numeric'
+            });
+        }
+
+        async function loadReleases() {
+            try {
+                const res = await fetch(API);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const releases = await res.json();
+
+                if (!releases.length) {
+                    document.getElementById('hero-status').textContent = 'No releases found.';
+                    return;
+                }
+
+                // ── Latest release → hero ──────────────────────────────────
+                const latest = releases[0];
+                const latestAssets = parseAssets(latest.assets);
+
+                document.getElementById('latest-version').textContent = latest.tag_name;
+                document.getElementById('hero-status').textContent = '';
+
+                if (latestAssets.mac) {
+                    const btn = document.getElementById('btn-mac');
+                    btn.href = latestAssets.mac;
+                    btn.removeAttribute('hidden');
+                }
+                if (latestAssets.windows) {
+                    const btn = document.getElementById('btn-windows');
+                    btn.href = latestAssets.windows;
+                    btn.removeAttribute('hidden');
+                }
+                // ── All releases → history table ───────────────────────────
+                const container = document.getElementById('history-container');
+                const table = document.createElement('table');
+                table.className = 'cc-version-table';
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Version</th>
+                            <th>Released</th>
+                            <th>Downloads</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-tbody"></tbody>
+                `;
+                container.innerHTML = '';
+                container.appendChild(table);
+                const tbody = document.getElementById('history-tbody');
+
+                for (const [i, release] of releases.entries()) {
+                    const a = parseAssets(release.assets);
+                    const isLatest = i === 0;
+
+                    // Build per-platform link chips
+                    let links = '<div class="cc-platform-links">';
+                    if (a.mac) {
+                        links += `<a href="${a.mac}" class="cc-dl-link"><i class="fab fa-apple"></i> macOS</a>`;
+                    }
+                    if (a.windows) {
+                        links += `<a href="${a.windows}" class="cc-dl-link"><i class="fab fa-windows"></i> Windows</a>`;
+                    }
+                    // Linux: use resolved URL if present, otherwise derive from tag
+                    const linuxUrl = a.linux
+                        || `https://github.com/zpreator/CacheCow/releases/download/${release.tag_name}/install.sh`;
+                    links += `<a href="${linuxUrl}" class="cc-dl-link"><i class="fab fa-linux"></i> Linux</a>`;
+                    links += '</div>';
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>
+                            <span class="cc-version-tag">${release.tag_name}</span>
+                            ${isLatest ? '<span class="cc-latest-badge">Latest</span>' : ''}
+                        </td>
+                        <td class="cc-version-date">${fmtDate(release.published_at)}</td>
+                        <td>${links}</td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+
+            } catch (err) {
+                console.error('Failed to load releases:', err);
+                document.getElementById('latest-version').textContent = 'Latest';
+                document.getElementById('hero-status').textContent =
+                    'Could not fetch release info — visit GitHub for downloads.';
+                document.getElementById('history-container').innerHTML = `
+                    <p class="cc-history-status">
+                        Could not load release history.
+                        <a href="https://github.com/zpreator/CacheCow/releases"
+                           target="_blank" style="color:#6366f1;">View on GitHub</a>.
+                    </p>`;
+            }
+        }
+
+        function showLinuxInstall() {
+            const section = document.getElementById('linux-section');
+            section.classList.add('visible');
+            section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function copyCmd() {
+            const text = document.getElementById('linux-cmd').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.querySelector('.cc-copy-btn');
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i> Copy'; }, 2000);
+            });
+        }
+
+        loadReleases();
+    </script>
+</body>
+</html>
