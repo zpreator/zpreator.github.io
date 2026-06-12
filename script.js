@@ -367,6 +367,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // List of project files (you can expand this or make it dynamic)
             const projectFiles = [
                 'cachecow.md',
+                'runalysis.md',
                 'ai-text-adventure.md',
                 'moovmetrics.md',
                 'sheep-launcher.md',
