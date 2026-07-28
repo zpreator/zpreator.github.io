@@ -30,21 +30,22 @@ async function generateResumePDF() {
         let yPosition = margin;
 
         // Helper function to add text with word wrap
+        const LINE_HEIGHT_FACTOR = 1.15; // matches jsPDF's default line height for multi-line text
         function addText(text, fontSize, fontStyle = 'normal', color = [0, 0, 0]) {
             doc.setFontSize(fontSize);
             doc.setFont('helvetica', fontStyle);
             doc.setTextColor(color[0], color[1], color[2]);
-            
+
             const lines = doc.splitTextToSize(text, contentWidth);
-            
+
             // Check if we need a new page
-            if (yPosition + (lines.length * fontSize * 0.5) > pageHeight - margin) {
+            if (yPosition + (lines.length * fontSize * LINE_HEIGHT_FACTOR) > pageHeight - margin) {
                 doc.addPage();
                 yPosition = margin;
             }
-            
+
             doc.text(lines, margin, yPosition);
-            yPosition += lines.length * fontSize * 0.5 + 5;
+            yPosition += lines.length * fontSize * LINE_HEIGHT_FACTOR + 5;
         }
 
         // Helper function to add a line
