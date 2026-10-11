@@ -1,75 +1,54 @@
 # Zachary Preator
 
-**Machine Learning Engineer**
+**Data Scientist | Machine Learning Engineer**
 
 📧 Email: [zachary.preator@gmail.com](mailto:zachary.preator@gmail.com)  
 🔗 LinkedIn: [linkedin.com/in/zachary-preator/](https://www.linkedin.com/in/zachary-preator/)  
-🐙 GitHub: [github.com/darthpreator](https://github.com/darthpreator)  
+🐙 GitHub: [github.com/zpreator](https://github.com/zpreator)  
 🌐 Portfolio: [zpreator.github.io](https://zpreator.github.io)  
 📍 Location: West Point, Utah
 
----
-
 ## Summary
 
-Machine Learning Engineer with 5+ years of experience researching, building, and deploying ML models in production.
+Data Scientist and Machine Learning Engineer with 5+ years of experience spanning reliability engineering and production ML. Reliability-team background includes industrial statistics and design of experiments (JMP), attendance at the RAMS (Reliability and Maintainability Symposium) conference, and hands-on predictive modeling (XGBoost) on time-series sensor data. Mechanical engineering foundation brings physics-based reasoning to modeling problems, complementing production experience building cloud-based data pipelines (Apache Spark, AWS Glue) and deploying ML models at scale (AWS EKS/Kubernetes).
 
 
 ## Experience
 
 **Cricut, Machine Learning Engineer**, South Jordan, Utah - *August 2023 - Present*
-- Developed novel semantic font search system by fine-tuning CLIP models with real and synthetic LLM-generated data, improving user font discovery experience
-- Successfully deployed ML recommendation models to production using AWS and EKS, serving thousands of daily users
-- Won internal plugin hackathon by developing a puzzle generator plugin in Swift, demonstrating rapid prototyping abilities
-- Architected and implemented C# API endpoints to support machine learning model integration and inference
+- Built large-scale data pipelines with Apache Spark in AWS Glue, feeding production model training and evaluation
+- Fine-tuned CLIP on real and synthetic data for semantic image search; validated model performance and deployed to millions of users via AWS EKS/Kubernetes
+- Architected and developed production APIs integrating LLMs into backend services
+- Established model versioning, CI/CD, and deployment workflows using Docker, GitHub Actions, and ArgoCD
+- Built an internal model-evaluation platform (Streamlit) for interactive analysis and stakeholder demos
 
-**Autoliv, Development Engineer**, Ogden, Utah - *August 2020 - August 2023*
-- Designed and implemented CNN-based computer vision tool using TensorFlow to automate critical point detection in manufacturing imagery, reducing analysis time by 80%
-- Built full-stack web application (Apache, Flask, SQLite) for real-time manufacturing anomaly detection, preventing costly production defects
-- Led cross-functional team implementing feature engineering and dimensionality reduction techniques with scikit-learn to analyze large-scale manufacturing datasets
-
-**Autoliv, Product Reliability Intern**, Ogden, Utah - *June 2020 - August 2020*
-- Built Tensorflow autoencoder model to classify images during manufacturing process
-- Trained on statistical analysis and reliability methods in a manufacturing environment
+**Autoliv, Reliability Engineer**, Ogden, Utah - *August 2020 - August 2023*
+- Applied industrial statistics and design of experiments to manufacturing and test data; attended the RAMS (Reliability and Maintainability Symposium) conference
+- Built XGBoost time-series models on tabular sensor data to predict physical test curves, applying PCA/dimensionality reduction and feature engineering
+- Designed a semi-automated data annotation pipeline (YOLO) for manufacturing imagery, addressing limited and sparse labeled data through custom manual-refinement tooling
+- Built and validated a CNN-based critical point detection model (TensorFlow), reducing analysis time by 80%
+- Shipped a full-stack time-series anomaly detection system (Flask, SQLite, Plotly) applying statistical modeling to flag anomalies from thousands of real-time test deployments
 
 **Design Automation Associates Inc, Engineering Intern**, Rexburg, Idaho - *May 2019 - June 2020*
-- Developed C# application for automating tasks and presenting data through CAD APIs
-- Created AR android mobile app in Java for viewing a mechanical assembly in 3D
+- Built C# tooling automating workflows via CAD APIs; developed AR Android app for 3D assembly visualization
 
 ## Education
 
 **Colorado State University - Global**, Aurora, Colorado - *June 2021 - June 2024*
-- Master of Science in Computer Science - AI & Machine Learning
-- Cumulative GPA: 3.84/4.00
-- Used Unity to create a mars rover simulation for reinforcement learning research
+- Master of Science in Computer Science - AI & Machine Learning • GPA: 3.84
 
 **Brigham Young University - Idaho**, Rexburg, Idaho - *August 2017 - December 2020*
-- Bachelor of Science in Mechanical Engineering - Emphasis in Programming
-- Cumulative GPA: 3.78/4.00
+- Bachelor of Science in Mechanical Engineering — Emphasis in Programming • GPA: 3.78
 
 ## Projects
 
-**AI Text Adventure iOS Game**, *(Prototype, 2024)*
-- Developed text-based adventure game leveraging Apple's Foundation LLM models for dynamic story generation on device
-- Implemented Swift-based iOS interface with natural language processing for immersive gaming experience
-- Technologies: Swift, iOS SDK, Apple Foundation Models
-
-**Moovmetrics - Fitness Tracking Web App**, *2023 - 2025*
-- Built comprehensive full-stack fitness tracking application integrating Strava API with Flask backend and SQLite database
-- Implemented secure user authentication, interactive data visualizations, and responsive design for optimal mobile experience
-- Technologies: Flask, SQLite, JavaScript, HTML/CSS, Strava API
-
-**Twitter Bot**, *2021*
-- Engineered automated content generation system using Twitter API, NLP techniques, and Markov Chain algorithms
-- Created humorous tweet generation with contextual awareness leveraging LLMs
-- Technologies: Python, Tweepy, NLTK, Markov Chains
+**Runalysis**, *2026*
+- Personal running-form analyzer applying YOLO pose estimation and point tracking to treadmill footage, extracting time-series biomechanical signals (cadence, stride length, ground contact time) and classifying form with an interpretable Random Forest model
+- Technologies: Python, YOLO, OpenCV, NumPy
 
 ## Technical Skills
 
-**Programming Languages:** Python, Swift, C#, Java, JavaScript, HTML/CSS  
-**ML/AI Frameworks:** PyTorch, TensorFlow, scikit-learn, CLIP, Hugging Face  
-**Cloud & DevOps:** AWS, EKS, ArgoCD, Docker, GitHub Actions
-**Databases:** SQLite, SQL, PostgreSQL, Redshift
-**Web Technologies:** Flask, Apache, REST APIs  
-**Development Tools:** Unity, Xcode, Visual Studio, CAD APIs  
-**Specializations:** Computer Vision, Recommendation Systems, Search Systems
+**Statistics & Reliability:** Design of Experiments (JMP), PCA / Dimensionality Reduction, XGBoost, Reliability Engineering, Time-Series Modeling  
+**Programming:** Python, SQL, C#, JavaScript  
+**ML/AI:** PyTorch, TensorFlow, scikit-learn, CLIP, Hugging Face, YOLO, CNNs, Random Forest  
+**Data & Cloud Engineering:** Apache Spark, AWS Glue, AWS EKS, PostgreSQL, Redshift, Docker, Kubernetes, ArgoCD, Helm, GitHub Actions

@@ -1,0 +1,96 @@
+:root {
+  --bg: #fbfaf7;
+  --fg: #1c1c1a;
+  --muted: #6b6a64;
+  --rule: #d9d6cc;
+  --link: #0b5cad;
+  --accent: #b4441f;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #161614;
+    --fg: #e8e6df;
+    --muted: #9a988f;
+    --rule: #34332f;
+    --link: #7db4ee;
+    --accent: #e08a62;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 17px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+a { color: var(--link); text-underline-offset: 2px; }
+a:hover { color: var(--accent); }
+
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 20px; }
+
+header.top { border-bottom: 1px solid var(--rule); }
+header.top .wrap { display: flex; justify-content: space-between; align-items: baseline; padding-top: 14px; padding-bottom: 14px; }
+header.top .name { font-weight: 700; color: var(--fg); text-decoration: none; }
+header.top nav a { margin-left: 18px; color: var(--muted); text-decoration: none; font-size: 15px; }
+header.top nav a:hover { color: var(--fg); text-decoration: underline; }
+
+.intro { display: flex; gap: 28px; align-items: flex-start; padding: 44px 0 32px; }
+.intro img { width: 112px; height: 112px; object-fit: cover; border-radius: 50%; flex: none; }
+.intro h1 { margin: 0 0 4px; font-size: 32px; line-height: 1.2; }
+.intro .role { margin: 0 0 12px; color: var(--muted); }
+.intro p { margin: 0 0 10px; }
+.links { font-size: 15px; }
+.links a { margin-right: 16px; }
+
+section { padding: 28px 0; border-top: 1px solid var(--rule); }
+section > h2 { margin: 0 0 4px; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+section > .sub { margin: 0 0 20px; color: var(--muted); font-size: 15px; }
+
+/* Sites I run */
+.sites { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 24px; }
+.site { display: block; color: inherit; text-decoration: none; border: 1px solid var(--rule); }
+.site:hover { border-color: var(--fg); }
+.site .shot { aspect-ratio: 16 / 9; background: #e9e6dc; overflow: hidden; border-bottom: 1px solid var(--rule); }
+.site .shot img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+.site .shot.logo { display: flex; align-items: center; justify-content: center; }
+.site .shot.logo img { width: auto; height: 70%; object-fit: contain; }
+.site .body { padding: 12px 14px 14px; }
+.site h3 { margin: 0; font-size: 18px; color: var(--link); }
+.site:hover h3 { text-decoration: underline; }
+.site .url { font: 13px ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--muted); margin: 2px 0 6px; }
+.site p { margin: 0; font-size: 15px; }
+
+/* Projects */
+.projects { list-style: none; margin: 0; padding: 0; }
+.projects li { display: grid; grid-template-columns: 168px 1fr; gap: 18px; padding: 16px 0; border-top: 1px solid var(--rule); }
+.projects li:first-child { border-top: 0; padding-top: 0; }
+.projects img { width: 168px; aspect-ratio: 16 / 9; object-fit: cover; display: block; border: 1px solid var(--rule); background: #e9e6dc; }
+.projects img.contain { object-fit: contain; padding: 6px; }
+.projects h3 { margin: 0; font-size: 18px; }
+.projects .meta { color: var(--muted); font-size: 14px; margin: 1px 0 4px; }
+.projects p { margin: 0 0 4px; font-size: 15.5px; }
+.projects .more { font-size: 14.5px; }
+.projects .more a + a { margin-left: 14px; }
+
+/* Experience */
+.job { display: grid; grid-template-columns: 150px 1fr; gap: 18px; padding: 8px 0; }
+.job .when { color: var(--muted); font-size: 15px; }
+.job strong { display: block; }
+.job span { color: var(--muted); font-size: 15px; }
+
+.tools { margin: 0; font-size: 15.5px; }
+.tools b { font-weight: 600; }
+
+footer { border-top: 1px solid var(--rule); padding: 20px 0 40px; color: var(--muted); font-size: 14px; }
+
+@media (max-width: 640px) {
+  .intro { flex-direction: column; gap: 16px; padding-top: 28px; }
+  .sites { grid-template-columns: 1fr; }
+  .projects li { grid-template-columns: 1fr; gap: 10px; }
+  .projects img { width: 100%; }
+  .job { grid-template-columns: 1fr; gap: 0; }
+  header.top nav a { margin-left: 12px; }
+}

@@ -1,227 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zachary Preator - Portfolio</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- PDF Generation Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Zachary Preator</title>
+  <meta name="description" content="Zachary Preator, machine learning engineer in Utah. Sites I run and projects I've built.">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="#home" class="nav-logo">ZP</a>
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="#home" class="nav-link">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#about" class="nav-link">About</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#projects" class="nav-link">Projects</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#experience" class="nav-link">Experience</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#skills" class="nav-link">Skills</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#contact" class="nav-link">Contact</a>
-                </li>
-            </ul>
-            <div class="nav-toggle">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </div>
-        </div>
+
+<header class="top">
+  <div class="wrap">
+    <a class="name" href="#">Zachary Preator</a>
+    <nav>
+      <a href="#sites">Sites</a>
+      <a href="#projects">Projects</a>
+      <a href="#work">Work</a>
+      <a href="#contact">Contact</a>
     </nav>
+  </div>
+</header>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-container">
-            <div class="hero-content">
-                <h1 class="hero-title">
-                    Hi, I'm <span class="highlight">Zachary Preator</span>
-                </h1>
-                <p class="hero-subtitle">ML Engineer & Data Scientist</p>
-                <p class="hero-description" id="hero-description">
-                </p>
-                <div class="hero-buttons">
-                    <a href="#projects" class="btn btn-primary">View My Work</a>
-                    <a href="#contact" class="btn btn-secondary">Get In Touch</a>
-                    <button id="download-resume-btn" class="btn btn-outline">
-                        <i class="fas fa-download"></i> Download Resume
-                    </button>
-                </div>
-            </div>
-            <div class="hero-image">
-                <div class="profile-card">
-                    <div class="profile-image">
-                        <img src="images/profile/avatar.jpeg" alt="Zachary Preator">
-                    </div>
-                </div>
-            </div>
+<main class="wrap">
+
+  <div class="intro">
+    <img src="images/site/avatar.jpg" alt="Zachary Preator">
+    <div>
+      <h1>Zachary Preator</h1>
+      <p class="role">Machine learning engineer · West Point, Utah</p>
+      <p>I build and ship ML systems for a living (currently at Cricut: CLIP-based image search, data pipelines, and model serving on Kubernetes) and build small apps and sites on the side. Before ML I was a reliability engineer, so I like statistics and I like things that stay up.</p>
+      <p class="links">
+        <a href="https://github.com/zpreator">GitHub</a>
+        <a href="https://www.linkedin.com/in/zachary-preator/">LinkedIn</a>
+        <a href="mailto:zachary.preator@gmail.com">Email</a>
+        <a href="resume.pdf">Resume (PDF)</a>
+      </p>
+    </div>
+  </div>
+
+  <section id="sites">
+    <h2>Sites I run</h2>
+    <p class="sub">Things that are live and that I maintain.</p>
+    <div class="sites">
+
+      <a class="site" href="https://moovmetrics.com">
+        <div class="shot"><img src="images/site/moovmetrics-site.png" alt="Screenshot of Moov Metrics" loading="lazy"></div>
+        <div class="body">
+          <h3>Moov Metrics</h3>
+          <div class="url">moovmetrics.com</div>
+          <p>Running analytics on top of Strava: shoe tracking, race predictions and trend analysis. There's a no-login tools page if you just want to try it.</p>
         </div>
-    </section>
+      </a>
 
-    <!-- About Section -->
-    <section id="about" class="about">
-        <div class="container">
-            <h2 class="section-title">About Me</h2>
-            <div class="about-content">
-                <div class="about-text">
-                    <p id="about-description">
-                        <!-- Filled in by script.js -->
-                    </p>
-                    <div class="stats">
-                        <div class="stat">
-                            <span class="stat-number" id="years-experience">5+</span>
-                            <span class="stat-label">Years ML Experience</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-number">15+</span>
-                            <span class="stat-label">Technologies</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <a class="site" href="https://zpreator.github.io/model-map/">
+        <div class="shot"><img src="images/site/model-map.png" alt="Screenshot of Model Map" loading="lazy"></div>
+        <div class="body">
+          <h3>Model Map</h3>
+          <div class="url">zpreator.github.io/model-map</div>
+          <p>Interactive map of the ML model landscape, from ResNet18 up to flagship LLMs. Pick a problem and it shows which model fits and the lightest setup that runs it.</p>
         </div>
-    </section>
+      </a>
 
-    <!-- Projects Section -->
-    <section id="projects" class="projects">
-        <div class="container">
-            <h2 class="section-title">Featured Projects</h2>
-            <div class="projects-grid">
-                <!-- Projects will be dynamically loaded from content/projects/*.md -->
-            </div>
+      <a class="site" href="cachecow/">
+        <div class="shot"><img src="images/site/cachecow-site.png" alt="Screenshot of the CacheCow download page" loading="lazy"></div>
+        <div class="body">
+          <h3>CacheCow</h3>
+          <div class="url">zpreator.github.io/cachecow</div>
+          <p>Desktop app (Tauri, built on yt-dlp) that downloads videos on a schedule so you can watch them when and where you want. Installers for macOS, Windows and Linux.</p>
         </div>
-    </section>
+      </a>
 
-    <!-- Experience Section -->
-    <section id="experience" class="experience">
-        <div class="container">
-            <h2 class="section-title">Experience & Education</h2>
-            <div class="timeline">
-                <!-- Timeline items will be dynamically loaded from resume.md -->
-            </div>
+      <!-- Add more sites here: copy a block, swap the href, image, title and text. -->
+
+    </div>
+  </section>
+
+  <section id="projects">
+    <h2>Projects</h2>
+    <p class="sub">Code is on <a href="https://github.com/zpreator">GitHub</a>.</p>
+    <ul class="projects">
+
+      <li>
+        <img src="images/projects/runalysis.jpg" alt="" loading="lazy">
+        <div>
+          <h3>Runalysis</h3>
+          <div class="meta">2025–26 · Python, YOLO, OpenCV, scikit-learn</div>
+          <p>Analyzes treadmill video with YOLO pose estimation, pulls out cadence, stride length and ground contact time, and flags bad running form with an interpretable random forest.</p>
+          <div class="more"><a href="https://github.com/zpreator/runalysis">Code</a></div>
         </div>
-    </section>
+      </li>
 
-    <!-- Skills Section -->
-    <section id="skills" class="skills">
-        <div class="container">
-            <h2 class="section-title">Skills & Technologies</h2>
-            <div class="skills-grid">
-                <div class="skill-category">
-                    <h3>ML/AI Frameworks</h3>
-                    <div class="skill-list">
-                        <span class="skill-item">PyTorch</span>
-                        <span class="skill-item">TensorFlow</span>
-                        <span class="skill-item">scikit-learn</span>
-                        <span class="skill-item">CLIP</span>
-                        <span class="skill-item">Hugging Face</span>
-                        <span class="skill-item">Computer Vision</span>
-                        <span class="skill-item">Recommendation Systems</span>
-                        <span class="skill-item">Search Systems</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3>Programming Languages</h3>
-                    <div class="skill-list">
-                        <span class="skill-item">Python</span>
-                        <span class="skill-item">Swift</span>
-                        <span class="skill-item">C#</span>
-                        <span class="skill-item">Java</span>
-                        <span class="skill-item">JavaScript</span>
-                        <span class="skill-item">HTML/CSS</span>
-                        <span class="skill-item">SQL</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3>Cloud & Infrastructure</h3>
-                    <div class="skill-list">
-                        <span class="skill-item">AWS</span>
-                        <span class="skill-item">EKS</span>
-                        <span class="skill-item">ArgoCD</span>
-                        <span class="skill-item">Docker</span>
-                        <span class="skill-item">GitHub Actions</span>
-                        <span class="skill-item">PostgreSQL</span>
-                        <span class="skill-item">Redshift</span>
-                        <span class="skill-item">REST APIs</span>
-                    </div>
-                </div>
-            </div>
+      <li>
+        <img src="images/projects/moovmetrics.jpg" alt="" loading="lazy">
+        <div>
+          <h3>Moovmetrics</h3>
+          <div class="meta">2023–25 · Flask, SQLite, Strava API, Plotly</div>
+          <p>Running analytics web app built on the Strava API. Live at moovmetrics.com.</p>
+          <div class="more"><a href="https://moovmetrics.com">Site</a><a href="https://github.com/zpreator/moovmetrics">Code</a></div>
         </div>
-    </section>
+      </li>
 
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
-        <div class="container">
-            <h2 class="section-title">Get In Touch</h2>
-            <div class="contact-content">
-                <div class="contact-info">
-                    <h3>Let's Connect!</h3>
-                    <p>
-                        I'm always interested in new opportunities and collaborations. 
-                        Whether you have a project in mind or just want to chat about technology, 
-                        feel free to reach out!
-                    </p>
-                    <div class="contact-methods">
-                        <a href="mailto:zachary.preator@gmail.com" class="contact-method">
-                            <i class="fas fa-envelope"></i>
-                            <span>zachary.preator@gmail.com</span>
-                        </a>
-                        <a href="https://www.linkedin.com/in/zachary-preator/" class="contact-method">
-                            <i class="fab fa-linkedin"></i>
-                            <span>LinkedIn Profile</span>
-                        </a>
-                        <a href="https://github.com/darthpreator" class="contact-method">
-                            <i class="fab fa-github"></i>
-                            <span>GitHub Profile</span>
-                        </a>
-                    </div>
-                </div>
-                <form class="contact-form">
-                    <div class="form-group">
-                        <input type="text" name="name" placeholder="Your Name" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="email" name="email" placeholder="Your Email" required>
-                    </div>
-                    <div class="form-group">
-                        <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Send Message</button>
-                </form>
-            </div>
+      <li>
+        <img src="images/projects/ai-text-adventure.jpg" alt="" loading="lazy">
+        <div>
+          <h3>TextQuest</h3>
+          <div class="meta">2024–25 · Swift, Apple Foundation Models</div>
+          <p>Text adventure for iPhone where the story is generated on-device by Apple's Foundation LLM.</p>
+          <div class="more"><a href="https://github.com/zpreator/TextQuest">Code</a></div>
         </div>
-    </section>
+      </li>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 Zachary Preator. All rights reserved.</p>
-            <div class="social-links">
-                <a href="https://github.com/darthpreator" target="_blank"><i class="fab fa-github"></i></a>
-                <a href="https://www.linkedin.com/in/zachary-preator/" target="_blank"><i class="fab fa-linkedin"></i></a>
-                <a href="https://zpreator.github.io" target="_blank"><i class="fas fa-globe"></i></a>
-            </div>
+      <li>
+        <img src="images/projects/sheep-launcher-game.jpg" alt="" loading="lazy">
+        <div>
+          <h3>Sheep Launcher</h3>
+          <div class="meta">2023 · Unity, C#</div>
+          <p>Physics-based Unity game, built to practice object-oriented design in C#.</p>
         </div>
-    </footer>
+      </li>
 
-    <script type="module" src="script.js"></script>
-    <script type="module" src="resume-pdf.js"></script>
+      <li>
+        <img class="contain" src="images/projects/twitter-bot.png" alt="" loading="lazy">
+        <div>
+          <h3>Twitter Bot</h3>
+          <div class="meta">2021 · Python, Markov chains, LLMs</div>
+          <p>Bot that generates and posts jokes using Markov chains plus an LLM pass.</p>
+          <div class="more"><a href="https://github.com/zpreator/TwitterBot">Code</a></div>
+        </div>
+      </li>
+
+    </ul>
+  </section>
+
+  <section id="work">
+    <h2>Work and school</h2>
+    <div class="job">
+      <div class="when">2023 – now</div>
+      <div><strong>Machine Learning Engineer, Cricut</strong><span>Fine-tuned CLIP for semantic image search, Spark/Glue data pipelines, LLM-backed APIs, model deployment with Docker, ArgoCD and EKS.</span></div>
+    </div>
+    <div class="job">
+      <div class="when">2020 – 2023</div>
+      <div><strong>Reliability Engineer, Autoliv</strong><span>Time-series models on sensor data (XGBoost), CNN critical-point detection (80% less analysis time), YOLO annotation pipeline, anomaly-detection web app.</span></div>
+    </div>
+    <div class="job">
+      <div class="when">2021 – 2024</div>
+      <div><strong>M.S. Computer Science (AI &amp; ML), Colorado State University</strong><span>GPA 3.84</span></div>
+    </div>
+    <div class="job">
+      <div class="when">2017 – 2020</div>
+      <div><strong>B.S. Mechanical Engineering, BYU–Idaho</strong><span>GPA 3.78</span></div>
+    </div>
+    <p class="tools" style="margin-top:16px"><b>Tools:</b> Python, PyTorch, TensorFlow, scikit-learn, Hugging Face, Spark, AWS (EKS, Glue), Docker, Kubernetes, ArgoCD, GitHub Actions, SQL, C#, JavaScript, Swift.</p>
+  </section>
+
+  <section id="contact">
+    <h2>Contact</h2>
+    <p>Email is best: <a href="mailto:zachary.preator@gmail.com">zachary.preator@gmail.com</a>. I'm also on <a href="https://www.linkedin.com/in/zachary-preator/">LinkedIn</a> and <a href="https://github.com/zpreator">GitHub</a>.</p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">© Zachary Preator</div>
+</footer>
+
 </body>
 </html>
